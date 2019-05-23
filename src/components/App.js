@@ -33,12 +33,14 @@ class App extends React.Component {
     }
     if (this.state.loggedIn) {
       return (
-        <HomeScreen />
+        <HomeScreen token={
+          this.state.sessionToken}/>
       );
     }
     if (!this.state.loggedIn) {
       return (
-        <LogInScreen loggedIn={this.loggedInHandler.bind(this)}/>
+        <LogInScreen 
+          loggedIn={this.loggedInHandler.bind(this)}/>
       )
     }
   }
