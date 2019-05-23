@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 class LogInScreen extends React.Component {
 
@@ -22,6 +23,12 @@ class LogInScreen extends React.Component {
                   <div className="bg-white p-5 mx-auto col-md-8 col-10">
                     <h3 className="display-3">Issue Tracker</h3>
                     <p className="mb-3 lead">Welcome!</p>
+                    <div>
+                                    <p>Please choose a repository from the list below.</p>
+                                    <ul>
+                                        <li><Link to="/AllIssues">React</Link></li>
+                                    </ul>
+                                </div>
                   </div>
                 </div>
               </div>
