@@ -14,7 +14,7 @@ export const ApiRequest = function(url, method, data, onFinish) {
     }).then(response => response.json())
         .then((jsonData) => {
           // jsonData is parsed json object received from url
-          onFinish(jsonData)
+          onFinish(jsonData,url)
           console.log(jsonData)
         })
         .catch((error) => {
