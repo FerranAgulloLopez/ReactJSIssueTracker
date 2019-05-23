@@ -4,8 +4,8 @@ import './styles/index.css';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import LogInScreen from './components/LogInScreen';
-import AllIssues from './components/AllIssues';
+import LogInScreen from './components/views/LogInScreen';
+import AllIssues from './components/views/AllIssues';
 
 const routing = (
   <Router>

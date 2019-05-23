@@ -1,8 +1,8 @@
 import React from 'react';
 
 import LoadingScreen from "./LoadingScreen"
-import HomeScreen from "./HomeScreen"
-import LogInScreen from "./LogInScreen"
+import HomeScreen from "./views/HomeScreen"
+import LogInScreen from "./views/LogInScreen"
 
 class App extends React.Component {
 
