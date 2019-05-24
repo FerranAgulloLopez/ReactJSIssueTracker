@@ -1,7 +1,8 @@
 import React from 'react';
-import { Nav, Footer } from '../util/html_objects'
+import { Nav, Footer, Metadata } from '../util/html_objects'
 import { ApiRequest } from '../util/api_requests'
 import '../../styles/App.css';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 class AllIssues extends React.Component {
 
@@ -25,7 +26,8 @@ class AllIssues extends React.Component {
       }
       return (
         <div>
-        {this.returnMetadata()}
+        <Metadata />
+        <title>Issues</title>
         <Nav />
         <div style={{margin: 'auto', marginTop: '60px', width: '1200px', maxWidth: '90%', marginBottom: '40px'}}>
           <p>token</p>
@@ -70,6 +72,7 @@ class AllIssues extends React.Component {
               <p style={{color: 'darkred'}}>You need to be logged in to create a new issue</p>
             </div>
           </div>
+          <Link to="/CreateIssue">React</Link>
         </div>
         <Footer />
       </div>
@@ -154,20 +157,6 @@ class AllIssues extends React.Component {
         })
     }
    }
-
-   returnMetadata() {
-    return (
-        <div>
-            <meta charSet='utf-8'/>
-            <title>'Issues'</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
-            <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css" />
-        </div>
-    )
-   }
-
-
   }
 
  export default AllIssues;

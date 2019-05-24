@@ -6,12 +6,14 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import LogInScreen from './components/views/LogInScreen';
 import AllIssues from './components/views/AllIssues';
+import CreateIssue from './components/views/CreateIssue';
 
 const routing = (
   <Router>
     <div>
       <Route exact path="/" component={ LogInScreen } />
       <Route path="/AllIssues" component={ AllIssues } />
+      <Route path="/CreateIssue" component= { CreateIssue } />
     </div>
   </Router>
 )
