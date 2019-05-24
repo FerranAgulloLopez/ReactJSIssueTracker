@@ -11,19 +11,13 @@ class CreateIssue extends React.Component {
         <div>
             <Metadata />
             <Nav    />
-            <div className="py-5">
-                <div className="container">
-                  <div className="row" style={{}}>
-                    <div className="col-md-1" style={{}}>
-                    </div>
-                    <div className="col-md-8 offset-md-1">
-                      <div className="card bg-light mb-3" style={{paddingBottom: '20px'}}>
-                        <div className="card-header" style={{fontSize: '20px', fontWeight: 'bold'}}>Issue
-                        </div>
-                        <div className="card-body">
-                          <IssueForm />
-                        </div>
-                      </div>
+            <div className="py-5" style={{marginTop: '20px'}}>
+                <div className="container" style={{marginTop: '1px'}}>
+                  <h3 style={{}}><center>New Issue</center></h3>
+                  <div className="row">
+                    <div className="col-md-1" style={{}} />
+                    <div className="col-md-8 offset-md-1" style={{}}>
+                      <IssueForm />
                     </div>
                   </div>
                 </div>
