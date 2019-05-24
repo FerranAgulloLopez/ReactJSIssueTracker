@@ -1,29 +1,50 @@
 import React from 'react';
 import '../../../styles/App.css';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { ApiRequest } from '../../util/api_requests'
+
 
 class IssueForm extends React.Component {
 
     constructor(props) {
         super(props);
-        let assignee = props.assignee
-        let status = props.status
-        if (assignee == null) assignee = 'TuMismo'
-        if (props.status == null) status = 'NEW'
 
         this.state = {
             title: props.title,
             description: props.description,
-            assignee: assignee,
-            status: status,
+            assignee: props.assignee,
+            status: props.status,
             type: props.type,
-            priority: props.priority
+            priority: props.priority,
+            update: props.update
         };
-        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
 
-    handleInputChange(event) {
+    handleSubmit() {
+           const url = 'issues'
+           let method = 'POST'
+           if (this.state.update) method = 'PATCH'
+           const state = this.state
+           const data = {
+            'title': state.title,
+            'description': state.description,
+            'assignee': state.assignee,
+            'status': state.status,
+            'tipus': state.type,
+            'priority': state.priority
+           }
+           ApiRequest(url,method,data,this.handleResponse.bind(this))
+    }
+
+    handleResponse() {
+        window.location.href = "/AllIssues"
+    }
+
+    handleChange(event) {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const value = target.value;
         const name = target.name;
 
         this.setState({
@@ -33,7 +54,7 @@ class IssueForm extends React.Component {
 
    render() {
       return (
-         <div class="form-group">
+         <div className="form-group">
 
           <div>
               <label style={{fontSize: '17px'}}>
@@ -43,8 +64,9 @@ class IssueForm extends React.Component {
           <input
              name="title"
              type="text_field"
-             class="form-control"
-             value={this.state.title} />
+             className="form-control"
+             value={this.state.title}
+             onChange={this.handleChange} />
 
          <br />
          <div>
@@ -55,12 +77,14 @@ class IssueForm extends React.Component {
          <input
             name="description"
             type="text_area"
-            class="form-control"
-            value={this.state.description} />
+            className="form-control"
+            value={this.state.description}
+            onChange={this.handleChange} />
 
          <br />
          <br />
          <table style={{width: '50%'}}>
+         <tbody>
             <tr>
                 <th></th>
                 <th></th>
@@ -72,11 +96,12 @@ class IssueForm extends React.Component {
                     </label>
                 </td>
                 <td>
-                    <select value={this.state.assignee}>
+                    <select name="assignee" value={this.state.assignee} onChange={this.handleChange}>
                         <option value="TuMismo">TuMismo</option>
                         <option value="lime">Hola</option>
                         <option value="coconut">Antoooooooniiiiiiiiiiiiiiiii</option>
                         <option value="mango">Rubyyyyyyyyyyyyyyyyy</option>
+                        <option value="Antoni">Antoni</option>
                     </select>
                 </td>
             </tr>
@@ -88,7 +113,7 @@ class IssueForm extends React.Component {
                     </label>
                 </td>
                 <td>
-                    <select value={this.state.status}>
+                    <select name="status" value={this.state.status} onChange={this.handleChange}>
                         <option value="NEW">NEW</option>
                         <option value="DUPLICATE">DUPLICATE</option>
                         <option value="RESOLVED">RESOLVED</option>
@@ -105,7 +130,7 @@ class IssueForm extends React.Component {
                     </label>
                 </td>
                 <td>
-                    <select value={this.state.type}>
+                    <select name="type" value={this.state.type} onChange={this.handleChange}>
                         <option value="BUG">BUG</option>
                         <option value="ENHANCEMENT">ENHANCEMENT</option>
                         <option value="PROPOSAL">PROPOSAL</option>
@@ -121,7 +146,7 @@ class IssueForm extends React.Component {
                     </label>
                 </td>
                 <td>
-                    <select value={this.state.priority}>
+                    <select name="priority" value={this.state.priority} onChange={this.handleChange}>
                         <option value="MAJOR">MAJOR</option>
                         <option value="TRIVIAL">TRIVIAL</option>
                         <option value="MINOR">MINOR</option>
@@ -130,15 +155,16 @@ class IssueForm extends React.Component {
                     </select>
                 </td>
             </tr>
+         </tbody>
          </table>
 
          <br />
          <div className="row" style={{marginTop: '10px', marginLeft: '180px', marginRight: '200px'}}>
              <div className="col-md-6" style={{}}>
-               <input type="submit" value="Submit" class="btn btn-primary" style={{color: 'white', borderColor: 'black', backgroundColor: 'black'}}/>
+               <input type="submit" value="Submit" onClick={this.handleSubmit} className="btn btn-primary" style={{color: 'white', borderColor: 'black', backgroundColor: 'black'}}/>
              </div>
              <div className="col-md-2 offset-md-4" style={{}}>
-               <input type="submit" value="Back" class="btn btn-primary" style={{color: 'white', borderColor: 'black', backgroundColor: 'black'}}/>
+               <Link to="/AllIssues"><input type="submit" value="Back" className="btn btn-primary" style={{color: 'white', borderColor: 'black', backgroundColor: 'black'}}/></Link>
              </div>
          </div>
         </div>

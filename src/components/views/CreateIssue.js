@@ -17,7 +17,15 @@ class CreateIssue extends React.Component {
                   <div className="row">
                     <div className="col-md-1" style={{}} />
                     <div className="col-md-8 offset-md-1" style={{}}>
-                      <IssueForm />
+                      <IssueForm
+                        title={''}
+                        description={''}
+                        assignee={'Antoni'}
+                        status={'NEW'}
+                        type={'BUG'}
+                        priority={'MAJOR'}
+                        update={false}
+                      />
                     </div>
                   </div>
                 </div>
