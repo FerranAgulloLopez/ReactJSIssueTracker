@@ -67,3 +67,8 @@ select::-ms-expand {
     padding: 5px\9;
   }
 }
+
+.myLink:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

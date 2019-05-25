@@ -56,7 +56,7 @@ class AllIssues extends React.Component {
                   {this.showTableTitles('Votes','ordered_by_votes')}
                 </th>
                 <th style={{width: '160px'}}>
-                  {this.showTableTitles('Assignee','ordered_by_user')}
+                  {this.showTableTitles('Assignee','ordered_by_assignee')}
                 </th>
                 <th style={{width: '120px'}}>
                   {this.showTableTitles('Created','ordered_by_created')}
@@ -169,14 +169,14 @@ class AllIssues extends React.Component {
        return (
            <tr>
              <th scope="row">{issue.title}</th>
-                 <td>{issue.tipus}</td>
-                 <td>{issue.priority}</td>
-                 <td>{issue.status}</td>
+                 <td><label className="myLink" onClick={() => this.addFilter('tipus='+issue.tipus)}>{issue.tipus}</label></td>
+                 <td><label className="myLink" onClick={() => this.addFilter('priority='+issue.priority)}>{issue.priority}</label></td>
+                 <td><label className="myLink" onClick={() => this.addFilter('status='+issue.status)}>{issue.status}</label></td>
                  <td>{issue.votes}</td>
                  <td>
                     <div className="has-link">
                     <img src={image} style={{height: '26px', borderRadius: '13px'}} />
-                    {' '+assign}
+                    <label className="myLink" onClick={() => this.addFilter('assign='+assign)}>{' '+assign}</label>
                     </div>
                  </td>
                  <td>{issue.created_at}</td>
@@ -190,8 +190,8 @@ class AllIssues extends React.Component {
      let url = this.state.last_url
      if (url != null && url.includes(order)) {
         return (
-            <div>
-                <button className='transparent-button' onClick={() => this.addFilter(order)}>{word}</button>
+            <div className='myLink' onClick={() => this.addFilter(order)}>
+                <label>{word}</label>
                 <img src="https://image.flaticon.com/icons/svg/32/32195.svg" style={{height: '15px'}} />
             </div>
         )
@@ -205,22 +205,21 @@ class AllIssues extends React.Component {
    }
 
    addFilter(filter) {
-    if (!this.state.filters.includes(filter)) {
-        //let new_filters = this.state.filters.slice()
-        let new_filters = []
-        new_filters.push(filter)
-        this.setState({
-            filters: new_filters,
-            search: true
-        })
+    let new_filters = this.state.filters
+    if (filter.includes('order')) {
+        if (new_filters.includes(filter)) {
+            new_filters = new_filters.filter(function(el){return el !== filter;});
+        } else {
+            new_filters = new_filters.filter(function(el){return !el.includes('order');});
+            new_filters.push(filter)
+        }
     } else {
-        //let new_filters = this.state.filters.slice()
-        let new_filters = []
-        this.setState({
+        new_filters.push(filter)
+    }
+    this.setState({
             filters: new_filters,
             search: true
-        })
-    }
+    })
    }
   }
 
