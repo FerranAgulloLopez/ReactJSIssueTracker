@@ -20,7 +20,6 @@ class CreateIssue extends React.Component {
                       <IssueForm
                         title={''}
                         description={''}
-                        assignee={'Antoni'}
                         status={'NEW'}
                         type={'BUG'}
                         priority={'MAJOR'}

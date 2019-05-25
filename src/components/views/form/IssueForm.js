@@ -12,13 +12,14 @@ class IssueForm extends React.Component {
         this.state = {
             title: props.title,
             description: props.description,
-            assignee: props.assignee,
+            assignee: 'Antoni', //loggedUser
             status: props.status,
             type: props.type,
             priority: props.priority,
             update: props.update,
             errorTitle: false,
-            errorDescription: false
+            errorDescription: false,
+            users: null
         };
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -42,6 +43,31 @@ class IssueForm extends React.Component {
                }
                ApiRequest(url,method,data,this.handleResponse.bind(this))
            }
+    }
+
+    handleUsersResponse(json,url) {
+        let usersName = []
+        for (let user of json) {
+            usersName.push(user.username)
+        }
+        this.setState({users: usersName})
+    }
+
+    returnUsersEnum() {
+        let loggedUser = 'Antoni'
+        let usersNames = this.state.users
+        if (usersNames == null) {
+            const url = 'users'
+            const method = 'GET'
+            ApiRequest(url,method,null,this.handleUsersResponse.bind(this))
+            usersNames = []
+        }
+        usersNames.push('Antoni')
+        return (
+            <select name="assignee" value={this.state.assignee} onChange={this.handleChange}>
+                {usersNames.map(name => <option key={name} value={name}>{name}</option>)}
+            </select>
+        )
     }
 
     checkValues() {
@@ -139,13 +165,7 @@ class IssueForm extends React.Component {
                     </label>
                 </td>
                 <td>
-                    <select name="assignee" value={this.state.assignee} onChange={this.handleChange}>
-                        <option value="TuMismo">TuMismo</option>
-                        <option value="lime">Hola</option>
-                        <option value="coconut">Antoooooooniiiiiiiiiiiiiiiii</option>
-                        <option value="mango">Rubyyyyyyyyyyyyyyyyy</option>
-                        <option value="Antoni">Antoni</option>
-                    </select>
+                    {this.returnUsersEnum()}
                 </td>
             </tr>
             <br />
