@@ -19,10 +19,11 @@ class LogInScreen extends React.Component {
 
     async checkIfBeenRedirected() {
       if (window.location.href.includes("token=")) {
-        var token = window.location.href.replace(/.+token=/g, "");
-        //alert("Your token: " + token);
+        var token = window.location.href.replace(/.+token=/g, "").replace(/&.+/g, "");
+        var username = window.location.href.replace(/.+username=/g, "").replace("%20", " ");
         localStorage.setItem("session", token);
-        this.props.loggedIn(token);
+        localStorage.setItem("username", username);
+        this.props.loggedIn(token, username);
       }
     }
 

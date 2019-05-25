@@ -9,11 +9,12 @@ class LoadingScreen extends React.Component {
 
     async getLocalStorageSession() {
         var session = await localStorage.getItem("session");
+        var username = await localStorage.getItem("username");
         if (_.isNull(session)) this.props.notLoggedIn();
         else {
           // Validate token
           // if (valid)
-            this.props.loggedIn(session);
+            this.props.loggedIn(session, username);
           // else
           //   this.props.notLoggedIn();
         }

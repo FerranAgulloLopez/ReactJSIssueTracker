@@ -12,6 +12,7 @@ class App extends React.Component {
       loading: true,
       loggedIn: false,
       sessionToken: null,
+      username: null,
     };
   }
 
@@ -19,8 +20,8 @@ class App extends React.Component {
     this.setState({loading: false, loggedIn: false});
   }
 
-  loggedInHandler(session) {
-    this.setState({loading: false, loggedIn: true, sessionToken: session});
+  loggedInHandler(session, username) {
+    this.setState({loading: false, loggedIn: true, sessionToken: session, username});
   }
 
   logOut() {
@@ -40,6 +41,7 @@ class App extends React.Component {
       return (
         <HomeScreen 
           token={this.state.sessionToken}
+          username={this.state.username}
           logOut={this.logOut.bind(this)}/>
       );
     }

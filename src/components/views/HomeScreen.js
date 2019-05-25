@@ -1,8 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import _ from "lodash";
+import axios from "axios";
 import AllIssues from './AllIssues';
 import CreateIssue from './CreateIssue';
 import LogOut from './LogOut';
+import {host} from "../../externalLinks/apiserver"; 
 
 class HomeScreen extends React.Component {
 
@@ -10,16 +13,44 @@ class HomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      user: null,
+    };
   }
 
   componentDidMount() {
     if (window.location.href.includes("token") || window.location.href == "https://"+window.location.host+"/" || window.location.href == "http://"+window.location.host+"/") {
       window.location.href = "/AllIssues";
     }
+    this.getUser();
+  }
+
+  async getUser() {
+    // TODO: get user object
+    var resp = await axios({
+      method: 'get',
+      url: host+"users/"+this.props.username,
+      params: {}, 
+      data: {}, 
+      headers: {
+        Authorization: 'Bearer ' + this.props.token,
+        Accept: 'application/json',
+        "Content-Type": 'application/json'        
+      },
+    });
+    var data = resp.data;
+    alert(JSON.stringify(data));
   }
 
   render() {
-    //alert(this.props.token);
+    
+    console.log("Current token: " + this.props.token);
+
+    /*
+    if (_.isNull(this.state.user && false)) {
+      return (<div>Loading...</div>);
+    }*/
+
     return (
       <Router>
       <div>
