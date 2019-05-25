@@ -9,20 +9,19 @@ class AllIssues extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          issues_json: null,
+          issues_json: [],
           last_url: null,
           filters: [],
-          search: true
+          search: true,
+          images: new Map()
         };
     }
 
    render() {
       if (this.state.search) {this.searchIssues();}
       let issues_html = []
-      if (this.state.issues_json != null) {
-        for (let issue of this.state.issues_json) {
-            issues_html.push(this.printIssue(issue))
-        }
+      for (let issue of this.state.issues_json) {
+        issues_html.push(this.printIssue(issue))
       }
       return (
         <div>
@@ -64,7 +63,9 @@ class AllIssues extends React.Component {
                 </th>
               </tr>
             </thead>
-            <tbody>{issues_html}</tbody>
+            <tbody>
+                {issues_html}
+            </tbody>
           </table>
           <br />
           <div style={{display: 'flex', flexDirection: 'row', paddingBottom: '100px'}}>
@@ -87,6 +88,19 @@ class AllIssues extends React.Component {
        });
    }
 
+   handleUsersResponse(response,url) {
+        let images = new Map()
+        for (let user of response) {
+            let username = user.username
+            let image = user.avatar_url
+            images.set(username,image)
+        }
+        this.setState({
+            images: images,
+            search: false
+        })
+   }
+
    searchIssues() {
        let url = 'issues'
        let filters = this.state.filters
@@ -101,22 +115,31 @@ class AllIssues extends React.Component {
        const method = 'GET'
        const data = null
        ApiRequest(url,method,data,this.handleResponse.bind(this))
+       url = 'users'
+       ApiRequest(url,method,data,this.handleUsersResponse.bind(this))
    }
 
-   printIssue(json) {
+   printIssue(issue) {
        let follow = 'Following'
-       if (!json.followed_by_user) follow = 'Not following'
+       if (!issue.followed_by_user) follow = 'Not following'
+       let assign = issue._links.assign.href.replace('/users/','')
+       let image = this.state.images.get(assign)
        return (
            <tr>
-             <th scope="row">{json.title}</th>
-             <td>{json.tipus}</td>
-             <td>{json.priority}</td>
-             <td>{json.status}</td>
-             <td>{json.votes}</td>
-             <td>name</td>
-             <td>{json.created_at}</td>
-             <td>{json.updated_at}</td>
-             <td>follow</td>
+             <th scope="row">{issue.title}</th>
+                 <td>{issue.tipus}</td>
+                 <td>{issue.priority}</td>
+                 <td>{issue.status}</td>
+                 <td>{issue.votes}</td>
+                 <td>
+                    <div className="has-link">
+                    <img src={image} style={{height: '26px', borderRadius: '13px'}} />
+                    {' '+assign}
+                    </div>
+                 </td>
+                 <td>{issue.created_at}</td>
+                 <td>{issue.updated_at}</td>
+                 <td>{follow}</td>
            </tr>
        )
    }
