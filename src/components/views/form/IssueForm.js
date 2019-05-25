@@ -16,26 +16,67 @@ class IssueForm extends React.Component {
             status: props.status,
             type: props.type,
             priority: props.priority,
-            update: props.update
+            update: props.update,
+            errorTitle: false,
+            errorDescription: false
         };
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.errorTitleMessage = 'The title field is required'
+        this.errorDescriptionMessage = 'The description field is required'
     }
 
     handleSubmit() {
-           const url = 'issues'
-           let method = 'POST'
-           if (this.state.update) method = 'PATCH'
-           const state = this.state
-           const data = {
-            'title': state.title,
-            'description': state.description,
-            'assignee': state.assignee,
-            'status': state.status,
-            'tipus': state.type,
-            'priority': state.priority
+           if (this.checkValues()) {
+               const url = 'issues'
+               let method = 'POST'
+               if (this.state.update) method = 'PATCH'
+               const state = this.state
+               const data = {
+                'title': state.title,
+                'description': state.description,
+                'assignee': state.assignee,
+                'status': state.status,
+                'tipus': state.type,
+                'priority': state.priority
+               }
+               ApiRequest(url,method,data,this.handleResponse.bind(this))
            }
-           ApiRequest(url,method,data,this.handleResponse.bind(this))
+    }
+
+    checkValues() {
+        let errorTitle = false
+        let errorDescription = false
+        if (this.state.title == null || this.state.title === '') {
+            errorTitle = true
+        }
+        if (this.state.description == null || this.state.description === '') {
+            errorDescription = true
+        }
+        if (errorTitle || errorDescription) this.setState({errorTitle: errorTitle, errorDescription: errorDescription});
+        return !(errorTitle || errorDescription)
+    }
+
+    checkError(type) {
+        if (type === 'title' && this.state.errorTitle === true) {
+            return (
+                <div style={{color: 'red'}}>
+                    <label>
+                        {this.errorTitleMessage}
+                    </label>
+                </div>
+            )
+        } else {
+            if (type === 'description' && this.state.errorDescription === true) {
+                return (
+                    <div>
+                        <label style={{color: 'red'}}>
+                            {this.errorDescriptionMessage}
+                        </label>
+                    </div>
+                )
+            }
+        }
     }
 
     handleResponse() {
@@ -67,6 +108,7 @@ class IssueForm extends React.Component {
              className="form-control"
              value={this.state.title}
              onChange={this.handleChange} />
+          {this.checkError('title')}
 
          <br />
          <div>
@@ -80,6 +122,7 @@ class IssueForm extends React.Component {
             className="form-control"
             value={this.state.description}
             onChange={this.handleChange} />
+         {this.checkError('description')}
 
          <br />
          <br />

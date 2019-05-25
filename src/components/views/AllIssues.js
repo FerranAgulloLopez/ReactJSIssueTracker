@@ -72,7 +72,7 @@ class AllIssues extends React.Component {
               <p style={{color: 'darkred'}}>You need to be logged in to create a new issue</p>
             </div>
           </div>
-          <Link to="/CreateIssue">React</Link>
+          <Link to="/CreateIssue">CreateNewIssue</Link>
         </div>
         <Footer />
       </div>
