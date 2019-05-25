@@ -23,6 +23,11 @@ class App extends React.Component {
     this.setState({loading: false, loggedIn: true, sessionToken: session});
   }
 
+  logOut() {
+    localStorage.removeItem("session");
+    this.setState({loading: false, loggedIn: false});
+  }
+
   render() {
     if (this.state.loading) {
       return (
@@ -33,8 +38,9 @@ class App extends React.Component {
     }
     if (this.state.loggedIn) {
       return (
-        <HomeScreen token={
-          this.state.sessionToken}/>
+        <HomeScreen 
+          token={this.state.sessionToken}
+          logOut={this.logOut.bind(this)}/>
       );
     }
     if (!this.state.loggedIn) {
