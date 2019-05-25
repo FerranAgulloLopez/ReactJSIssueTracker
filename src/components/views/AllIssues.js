@@ -13,8 +13,11 @@ class AllIssues extends React.Component {
           last_url: null,
           filters: [],
           search: true,
-          images: new Map()
+          images: new Map(),
+          showToken: false
         };
+        this.clickToken = this.clickToken.bind(this)
+        this.deleteFilters = this.deleteFilters.bind(this)
     }
 
    render() {
@@ -29,8 +32,11 @@ class AllIssues extends React.Component {
         <title>Issues</title>
         <Nav />
         <div style={{margin: 'auto', marginTop: '60px', width: '1200px', maxWidth: '90%', marginBottom: '40px'}}>
-          <p>token</p>
           <h1 style={{marginBottom: '30px'}}>Issues</h1>
+          <div>
+              <button onClick={this.clickToken} className="btn btn-primary" style={{color: 'black', borderColor: '#D3D3D3', backgroundColor: '#D3D3D3', marginBottom: '10px'}}>Generate API Token</button>
+              {this.generateToken()}
+          </div>
           <table className="table table-hover">
             <thead>
               <tr>
@@ -69,15 +75,51 @@ class AllIssues extends React.Component {
           </table>
           <br />
           <div style={{display: 'flex', flexDirection: 'row', paddingBottom: '100px'}}>
-            <div style={{marginLeft: '10px'}}>
-              <p style={{color: 'darkred'}}>You need to be logged in to create a new issue</p>
-            </div>
+              <Link to="/CreateIssue"> <input type="submit" className="btn btn-primary" value="Create new issue" style={{color: 'white', borderColor: 'black', backgroundColor: 'black'}} /> </Link>
+              {this.showDeleteFiltersButton()}
           </div>
-          <Link to="/CreateIssue">CreateNewIssue</Link>
         </div>
         <Footer />
       </div>
       );
+   }
+
+   clickToken() {
+        let aux = !this.state.showToken
+        this.setState({showToken: aux, search: false})
+   }
+
+   showDeleteFiltersButton() {
+        if (this.state.filters.length > 0) {
+            return (
+                <div style={{marginLeft: '10px'}}>
+                    <input type="submit" onClick={this.deleteFilters} className="btn btn-primary" value="Delete filters" style={{position: 'absolute', marginBottom: '100px', color: 'white', borderColor: 'black', backgroundColor: 'black'}} />
+                </div>
+            )
+        }
+   }
+
+   deleteFilters() {
+        this.setState({
+            filters: [],
+            search: true
+        })
+   }
+
+   generateToken() {
+        if (this.state.showToken) {
+            return (
+                <div className="card bg-light mb-3">
+                    <div className="card-header" style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', fontSize: '17px', fontWeight: 'bold'}}>
+                      <strong>API access</strong>
+                    </div>
+                    <div className="card-body">
+                      <p>You can check the operations clicking in this <a href="https://blooming-forest-68248.herokuapp.com/api-docs/index.html">link</a>. Use this generated key to acces the different methods:
+                      </p>
+                    </div>
+                </div>
+            )
+        }
    }
 
    handleResponse(response,url) {
