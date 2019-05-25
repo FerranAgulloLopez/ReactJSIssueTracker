@@ -166,39 +166,47 @@ class AllIssues extends React.Component {
        if (!issue.followed_by_user) follow = 'Not following'
        let assign = issue._links.assign.href.replace('/users/','')
        let image = this.state.images.get(assign)
+       let style = {
+            color: '#666'
+       }
        return (
            <tr>
              <th scope="row">{issue.title}</th>
-                 <td><label className="myLink" onClick={() => this.addFilter('tipus='+issue.tipus)}>{issue.tipus}</label></td>
-                 <td><label className="myLink" onClick={() => this.addFilter('priority='+issue.priority)}>{issue.priority}</label></td>
-                 <td><label className="myLink" onClick={() => this.addFilter('status='+issue.status)}>{issue.status}</label></td>
-                 <td>{issue.votes}</td>
+                 <td><label className="myLink" onClick={() => this.addFilter('tipus='+issue.tipus)} style={style}>{issue.tipus}</label></td>
+                 <td><label className="myLink" onClick={() => this.addFilter('priority='+issue.priority)} style={style}>{issue.priority}</label></td>
+                 <td><label className="myLink" onClick={() => this.addFilter('status='+issue.status)} style={style}>{issue.status}</label></td>
+                 <td><label style={style}>{issue.votes}</label></td>
                  <td>
                     <div className="has-link">
                     <img src={image} style={{height: '26px', borderRadius: '13px'}} />
-                    <label className="myLink" onClick={() => this.addFilter('assign='+assign)}>{' '+assign}</label>
+                    <label className="myLink" onClick={() => this.addFilter('assign='+assign)} style={style}>{' '+assign}</label>
                     </div>
                  </td>
-                 <td>{issue.created_at}</td>
-                 <td>{issue.updated_at}</td>
-                 <td>{follow}</td>
+                 <td><label style={style}>{issue.created}</label></td>
+                 <td><label style={style}>{issue.updated}</label></td>
+                 <td><label style={style}>{follow}</label></td>
            </tr>
        )
    }
 
    showTableTitles(word,order) {
+   let style = {
+        fontFamily: 'verdana',
+        fontSize: '120%',
+        color: '#585858'
+   }
      let url = this.state.last_url
      if (url != null && url.includes(order)) {
         return (
-            <div className='myLink' onClick={() => this.addFilter(order)}>
-                <label>{word}</label>
+            <div>
+                <label className='myLink' onClick={() => this.addFilter(order)} style={style}>{word}</label>
                 <img src="https://image.flaticon.com/icons/svg/32/32195.svg" style={{height: '15px'}} />
             </div>
         )
      } else {
         return (
             <div>
-                <button className='transparent-button' onClick={() => this.addFilter(order)}>{word}</button>
+                <label className='myLink' onClick={() => this.addFilter(order)} style={style}>{word}</label>
             </div>
         )
      }
