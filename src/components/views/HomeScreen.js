@@ -6,6 +6,7 @@ import AllIssues from './AllIssues';
 import CreateIssue from './CreateIssue';
 import LogOut from './LogOut';
 import {host} from "../../externalLinks/apiserver"; 
+import { Nav} from '../util/html_objects'
 
 class HomeScreen extends React.Component {
 
@@ -39,27 +40,30 @@ class HomeScreen extends React.Component {
       },
     });
     var data = resp.data;
-    alert(JSON.stringify(data));
+    this.setState({user: data});
   }
 
   render() {
     
     console.log("Current token: " + this.props.token);
 
-    /*
-    if (_.isNull(this.state.user && false)) {
+    
+    if (_.isNull(this.state.user)) {
       return (<div>Loading...</div>);
-    }*/
+    }
 
     return (
-      <Router>
       <div>
-        <Route path="/AllIssues" component={ (props) => <AllIssues {...props} token={this.props.token} /> } />
-        <Route path="/CreateIssue" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
-        <Route path="/issue/" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
-        <Route path="/logout/" component= { (props) => <LogOut {...props} logOut={this.props.logOut} /> } />
+        <Router>
+        <Nav user={this.state.user}/>
+        <div>
+          <Route path="/AllIssues" component={ (props) => <AllIssues {...props} token={this.props.token} /> } />
+          <Route path="/CreateIssue" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
+          <Route path="/issue/" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
+          <Route path="/logout/" component= { (props) => <LogOut {...props} logOut={this.props.logOut} /> } />
+        </div>
+        </Router>
       </div>
-    </Router>
     );
   }
   

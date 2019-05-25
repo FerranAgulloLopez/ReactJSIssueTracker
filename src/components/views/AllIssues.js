@@ -30,7 +30,6 @@ class AllIssues extends React.Component {
         <div>
         <Metadata />
         <title>Issues</title>
-        <Nav />
         <div style={{margin: 'auto', marginTop: '60px', width: '1200px', maxWidth: '90%', marginBottom: '40px'}}>
           <h1 style={{marginBottom: '30px'}}>Issues</h1>
           <div>

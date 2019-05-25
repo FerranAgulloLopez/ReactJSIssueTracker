@@ -1,31 +1,38 @@
 import React from 'react';
 import '../../styles/App.css';
+import {Link } from 'react-router-dom';
 
-export const Nav = function() {
-  return (
-    <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
-        <div className="container">
-            <button className="navbar-toggler navbar-toggler-right border-0 p-0" type="button" data-toggle="collapse" data-target="#navbar14">
-                <p align="center" className="navbar-brand mb-0 text-white">
-                    <i className="fa d-inline fa-lg fa-stop-circle" /> ISSUE TRACKER
-                </p>
-            </button>
-            <div className="collapse navbar-collapse" id="navbar14">
-                <ul className="navbar-nav mr-auto">
-                    <li className="nav-item"> <a className="nav-link" href>Issues</a> </li>
-                </ul>
-                <p className="d-none d-md-block lead mb-0  text-white">
-                    <i className="fa d-inline fa-lg fa-stop-circle" /> <b> ISSUE TRACKER</b>
-                </p>
-                <ul className="navbar-nav ml-auto">
-                    <li className="nav-item"> <a className="nav-link" href>Sign in</a>
-                </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-  );
+export class Nav extends React.Component {
+
+    render() {
+        console.log(this.props.user);
+        return (
+          <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
+              <div className="container">
+                  <button className="navbar-toggler navbar-toggler-right border-0 p-0" type="button" data-toggle="collapse" data-target="#navbar14">
+                      <p align="center" className="navbar-brand mb-0 text-white">
+                          <i className="fa d-inline fa-lg fa-stop-circle" /> ISSUE TRACKER
+                      </p>
+                  </button>
+                  <div className="collapse navbar-collapse" id="navbar14">
+                      <ul className="navbar-nav mr-auto">
+                          <li className="nav-item"> <a className="nav-link" href>Issues</a> </li>
+                      </ul>
+                      <p className="d-none d-md-block lead mb-0  text-white">
+                          <i className="fa d-inline fa-lg fa-stop-circle" /> <b> ISSUE TRACKER</b>
+                      </p>
+                      <ul className="navbar-nav ml-auto">
+                        <li class="nav-item"> <a class="nav-link">{this.props.user.username}</a> </li>
+                        <li class="nav-item"> <img src={this.props.user.avatar_url} style={{height:"36px", borderRadius:"18px", marginRight:"20px"}}/> </li>
+                        <li class="nav-item"> <Link to="/logout"><a class="nav-link">Log Out</a></Link></li>
+                      </ul>
+                  </div>
+              </div>
+          </nav>
+        );
+    }
 }
+
 
 export const Footer = function() {
   return (

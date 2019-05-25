@@ -10,7 +10,6 @@ class CreateIssue extends React.Component {
       return (
         <div>
             <Metadata />
-            <Nav    />
             <div className="py-5" style={{marginTop: '20px'}}>
                 <div className="container" style={{marginTop: '1px'}}>
                   <h3 style={{}}><center>New Issue</center></h3>
