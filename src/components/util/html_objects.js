@@ -22,9 +22,9 @@ export class Nav extends React.Component {
                           <i className="fa d-inline fa-lg fa-stop-circle" /> <b> ISSUE TRACKER</b>
                       </p>
                       <ul className="navbar-nav ml-auto">
-                        <li class="nav-item"> <a class="nav-link">{this.props.user.username}</a> </li>
-                        <li class="nav-item"> <img src={this.props.user.avatar_url} style={{height:"36px", borderRadius:"18px", marginRight:"20px"}}/> </li>
-                        <li class="nav-item"> <Link to="/logout"><a class="nav-link">Log Out</a></Link></li>
+                        <li className="nav-item"> <a className="nav-link">{this.props.user.username}</a> </li>
+                        <li className="nav-item"> <img src={this.props.user.avatar_url} style={{height:"36px", borderRadius:"18px", marginRight:"20px"}}/> </li>
+                        <li className="nav-item"> <Link to="/logout"><a className="nav-link">Log Out</a></Link></li>
                       </ul>
                   </div>
               </div>

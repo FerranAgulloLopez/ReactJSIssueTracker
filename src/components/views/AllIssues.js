@@ -114,6 +114,7 @@ class AllIssues extends React.Component {
                     </div>
                     <div className="card-body">
                       <p>You can check the operations clicking in this <a href="https://blooming-forest-68248.herokuapp.com/api-docs/index.html">link</a>. Use this generated key to acces the different methods:
+                      {' '+this.props.token}
                       </p>
                     </div>
                 </div>
@@ -155,9 +156,9 @@ class AllIssues extends React.Component {
        }
        const method = 'GET'
        const data = null
-       ApiRequest(url,method,data,this.handleResponse.bind(this))
+       ApiRequest(url,method,data,this.handleResponse.bind(this),this.props.token)
        url = 'users'
-       ApiRequest(url,method,data,this.handleUsersResponse.bind(this))
+       ApiRequest(url,method,data,this.handleUsersResponse.bind(this),this.props.token)
    }
 
    printIssue(issue) {
