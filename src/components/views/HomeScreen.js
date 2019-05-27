@@ -58,7 +58,7 @@ class HomeScreen extends React.Component {
         <Nav user={this.state.user}/>
         <div>
           <Route path="/AllIssues" component={ (props) => <AllIssues {...props} token={this.props.token} /> } />
-          <Route path="/CreateIssue" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
+          <Route path="/CreateIssue" component= { (props) => <CreateIssue {...props} token={this.props.token} username={this.props.username}/> } />
           <Route path="/issue/" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
           <Route path="/logout/" component= { (props) => <LogOut {...props} logOut={this.props.logOut} /> } />
         </div>

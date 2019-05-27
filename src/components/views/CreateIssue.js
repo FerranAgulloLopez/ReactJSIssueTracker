@@ -23,6 +23,8 @@ class CreateIssue extends React.Component {
                         type={'BUG'}
                         priority={'MAJOR'}
                         update={false}
+                        token={this.props.token}
+                        username={this.props.username}
                       />
                     </div>
                   </div>

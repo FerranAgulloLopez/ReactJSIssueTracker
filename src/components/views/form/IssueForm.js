@@ -10,9 +10,10 @@ class IssueForm extends React.Component {
         super(props);
 
         this.state = {
+            token: null,
             title: props.title,
             description: props.description,
-            assignee: 'Antoni', //loggedUser
+            assignee: this.props.username,
             status: props.status,
             type: props.type,
             priority: props.priority,
@@ -34,14 +35,14 @@ class IssueForm extends React.Component {
                if (this.state.update) method = 'PATCH'
                const state = this.state
                const data = {
-                'title': state.title,
-                'description': state.description,
-                'assignee': state.assignee,
-                'status': state.status,
-                'tipus': state.type,
-                'priority': state.priority
+                'title': this.state.title,
+                'description': this.state.description,
+                'assigne': this.state.assignee,
+                'status': this.state.status,
+                'tipus': this.state.type,
+                'priority': this.state.priority
                }
-               ApiRequest(url,method,data,this.handleResponse.bind(this))
+               ApiRequest(url,method,data,this.handleResponse.bind(this),this.props.token)
            }
     }
 
@@ -54,15 +55,13 @@ class IssueForm extends React.Component {
     }
 
     returnUsersEnum() {
-        let loggedUser = 'Antoni'
         let usersNames = this.state.users
         if (usersNames == null) {
             const url = 'users'
             const method = 'GET'
-            ApiRequest(url,method,null,this.handleUsersResponse.bind(this))
+            ApiRequest(url,method,null,this.handleUsersResponse.bind(this),this.props.token)
             usersNames = []
         }
-        usersNames.push('Antoni')
         return (
             <select name="assignee" value={this.state.assignee} onChange={this.handleChange}>
                 {usersNames.map(name => <option key={name} value={name}>{name}</option>)}
@@ -121,8 +120,8 @@ class IssueForm extends React.Component {
 
    render() {
       return (
-         <div className="form-group">
 
+         <div className="form-group">
           <div>
               <label style={{fontSize: '17px'}}>
                   Title
