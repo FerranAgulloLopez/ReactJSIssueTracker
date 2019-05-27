@@ -27,7 +27,6 @@ class HomeScreen extends React.Component {
   }
 
   async getUser() {
-    // TODO: get user object
     var resp = await axios({
       method: 'get',
       url: host+"users/"+this.props.username,

@@ -16,7 +16,7 @@ export class Nav extends React.Component {
                   </button>
                   <div className="collapse navbar-collapse" id="navbar14">
                       <ul className="navbar-nav mr-auto">
-                          <li className="nav-item"> <a className="nav-link" href>Issues</a> </li>
+                          <li className="nav-item"><Link to="/AllIssues"><a class="nav-link">Issues</a></Link> </li>
                       </ul>
                       <p className="d-none d-md-block lead mb-0  text-white">
                           <i className="fa d-inline fa-lg fa-stop-circle" /> <b> ISSUE TRACKER</b>
