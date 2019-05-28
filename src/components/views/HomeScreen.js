@@ -5,6 +5,7 @@ import axios from "axios";
 import AllIssues from './AllIssues';
 import CreateIssue from './CreateIssue';
 import LogOut from './LogOut';
+import ShowIssue from './ShowIssue';
 import {host} from "../../externalLinks/apiserver"; 
 import { Nav} from '../util/html_objects'
 
@@ -53,6 +54,7 @@ class HomeScreen extends React.Component {
     }
 
     return (
+        
       <div>
         <Router>
         <Nav user={this.state.user}/>
@@ -61,6 +63,7 @@ class HomeScreen extends React.Component {
           <Route path="/CreateIssue" component= { (props) => <CreateIssue {...props} token={this.props.token} username={this.props.username}/> } />
           <Route path="/issue/" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
           <Route path="/logout/" component= { (props) => <LogOut {...props} logOut={this.props.logOut} /> } />
+          <Route path="/ShowIssue" component= { (props) => <ShowIssue {...props} token={this.props.token} username={this.props.username}/> } />
         </div>
         </Router>
       </div>
