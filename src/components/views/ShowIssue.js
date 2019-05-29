@@ -34,7 +34,7 @@ class ShowIssue extends React.Component {
     async postComment() {
         var resp = await axios({
             method: 'post',
-            url: host+"issues/"+"2"+"/comments",
+            url: host+"issues/"+this.state.id+"/comments",
             params: {}, 
             data: {
                 "text":this.state.value
@@ -75,7 +75,7 @@ class ShowIssue extends React.Component {
   async getComments() {
       var resp = await axios({
           method: 'get',
-          url: host+"issues/"+"2"+"/comments",
+          url: host+"issues/"+this.state.id+"/comments",
           params: {}, 
           data: {}, 
           headers: {
@@ -91,7 +91,7 @@ class ShowIssue extends React.Component {
   async downvote(){
           var resp = await axios({
           method: 'post',
-          url: host+"issues/"+"2"+"/unvote",
+          url: host+"issues/"+this.state.id+"/unvote",
           params: {}, 
           data: {}, 
           headers: {
@@ -105,7 +105,7 @@ class ShowIssue extends React.Component {
   async vote(){
       var resp = await axios({
           method: 'post',
-          url: host+"issues/"+"2"+"/vote",
+          url: host+"issues/"+this.state.id+"/vote",
           params: {}, 
           data: {}, 
           headers: {
@@ -119,7 +119,7 @@ class ShowIssue extends React.Component {
   async unfollow(){
       var resp = await axios({
           method: 'post',
-          url: host+"issues/"+"2"+"/unfollow",
+          url: host+"issues/"+this.state.id+"/unfollow",
           params: {}, 
           data: {}, 
           headers: {
@@ -133,7 +133,7 @@ class ShowIssue extends React.Component {
   async follow(){
       var resp = await axios({
           method: 'post',
-          url: host+"issues/"+"2"+"/follow",
+          url: host+"issues/"+this.state.id+"/follow",
           params: {}, 
           data: {}, 
           headers: {
