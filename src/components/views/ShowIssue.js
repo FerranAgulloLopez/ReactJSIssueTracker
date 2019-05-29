@@ -146,6 +146,9 @@ class ShowIssue extends React.Component {
   goToEdit(){
       window.location.href = window.location.href.replace("ShowIssue", "EditIssue");
   }
+  back(){
+      window.location.href = window.location.href.replace("ShowIssue/"+this.state.id, "AllIssues");
+  }
   async delete(){
       var resp = await axios({
           method: 'delete',
@@ -158,6 +161,7 @@ class ShowIssue extends React.Component {
               "Content-Type": 'application/json',        
           },
       });
+      window.location.href = '/AllIssues'
   }
 
   showComments(){
@@ -269,13 +273,13 @@ class ShowIssue extends React.Component {
                                 
                                     <h>Issue</h>
                                     {
-                                      this.props.username? <div>
-                                      {
-                                          this.state.issue.voted_by_user? <button onClick={this.downvote.bind(this)}>Downvote</button>:<button onClick={this.vote.bind(this)}>Vote</button>
+                                        this.props.username? <div>
+                                        {
+                                            this.state.issue.voted_by_user? <button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.downvote.bind(this)}>Downvote</button>:<button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.vote.bind(this)}>Vote</button>
                                       }
                                       <div>
                                       {
-                                          this.state.issue.followed_by_user? <button onClick={this.unfollow.bind(this)}>Unfollow</button>:<button onClick={this.follow.bind(this)}>Follow</button>
+                                            this.state.issue.followed_by_user? <button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.unfollow.bind(this)}>Unfollow</button>:<button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.follow.bind(this)}>Follow</button>
                                       }
                                       </div>
                                       </div>:null
@@ -335,14 +339,14 @@ class ShowIssue extends React.Component {
                                 <div className="col-md-6" style={{}}>
                                     {
                                         (this.props.username && this.state.issue._links.creator.href.replace(/.+\//g, "") == this.props.username)? <div>
-                                            <button onClick={this.goToEdit}>Edit</button>
-                                            <button onClick={this.delete.bind(this)}>Delete</button>
+                                            <button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.goToEdit}>Edit</button>
+                                            <button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.delete.bind(this)}>Delete</button>
                                         </div>:null
                                     }
                                     
                                 </div>
                                 <div className="col-md-2 offset-md-4" style={{}}>
-                                    <button onClick={this.back}>Back</button>
+                                    <button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.back.bind(this)}>Back</button>
                                 </div>
                             </div>
                                     {
