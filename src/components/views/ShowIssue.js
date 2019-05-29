@@ -12,7 +12,8 @@ class ShowIssue extends React.Component {
     this.state = {
         issue: null,
         value:'',
-        comments: null,
+        comments: [],
+        userCommentActual: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -139,10 +140,83 @@ class ShowIssue extends React.Component {
           },
       });
   }
-  showComments(){
-      for (var i = 0; i<this.props.comments.length;i++)
-          console.log("A");
+
+  async getUserCommentActual(user){
+        var resp = await axios({
+            method: 'get',
+            url: host+user,
+            params: {},
+            data: {},
+            headers: {
+                Authorization: 'Bearer ' + this.props.token,
+                Accept: 'application/json',
+                "Content-Type": 'application/json'
+            },
+      });
+      var data = resp.data;
+      this.setState({userCommentActual: data});
   }
+
+  llamarAGetUserCommentActual(user){
+    this.getUserCommentActual(user);
+  }
+
+  showComments(){
+      return (
+          <div className="container">
+              {this.state.comments.map(comment => (
+              <div className="row">
+              {this.llamarAGetUserCommentActual(comment._links.creator.href)}
+                <div className="col-sm-1">
+                    <div className="thumbnail">
+                        {this.userCommentActual? <img className="img-responsive user-photo" src={this.state.userCommentActual.avatar_url}/>:null}
+                    </div>
+                </div>
+               </div>
+
+              ))}
+          </div>
+      )
+
+      {/*<% if @issue.present? %>
+                                <div class="container">
+                                    <% comment=@issue.comment %>
+                                    <% for item in comment %>
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <div class="thumbnail">
+                                                <img class="img-responsive user-photo" src='<%= item.user.avatar_url %>'>
+                                            </div><!-- /thumbnail --
+                                        </div><!-- /col-sm-1 --
+                                        <div class="col-sm-5">
+                                            <div class="panel panel-default" style="width:200%">
+                                                <div class="panel-heading">
+                                                    <strong><%= item.user.username %></strong> <span class="text-muted"><%= item.created_at %></span>
+                                                    <% if !current_user.blank? %>
+                                                    <% if current_user.username == item.user.username %>
+                                                    <%= link_to 'Edit', request.original_url+ '/comments/' + item.id.to_s, :method => :post, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:65px;position:absolute" %>
+                                                    <%= link_to 'Delete', request.original_url + '/comments/' + item.id.to_s, :method => :delete, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:10px;position:absolute" %>
+                                                    <% end %>
+                                                    <% end %>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <%=item.text%>
+                                                    <hr>
+                                                    <% if (!item.post.blank?) %>
+                                                    <% for files in item.post%>
+                                                    <a href="<%= getHostFromIssues+files.attachment_identifier.url  %>" download> Click here to download the attachment</a>
+                                                    <%  end%>
+                                                    <%  end%>
+                                                </div><!-- /panel-body --
+                                            </div><!-- /panel panel-default --
+                                        </div><!-- /col-sm-5 --
+                                    </div><!-- /row --
+                                    <%end%>
+                                </div><!-- /container --
+                                <% end %>*/}
+  }
+
+
   
   render() {
       if (_.isNull(this.state.issue)) {
@@ -252,49 +326,15 @@ class ShowIssue extends React.Component {
                                     }
                             <div>
                                 <hr />
-                            {this.showComments.bind(this)}
-                                {/*<% if @issue.present? %>
-                        <div class="container">
-                            <% comment=@issue.comment %>
-                            <% for item in comment %>
-                            <div class="row">
-                                <div class="col-sm-1">
-                                    <div class="thumbnail">
-                                        <img class="img-responsive user-photo" src='<%= item.user.avatar_url %>'>
-                                    </div><!-- /thumbnail --
-                                </div><!-- /col-sm-1 --
-                                <div class="col-sm-5">
-                                    <div class="panel panel-default" style="width:200%">
-                                        <div class="panel-heading">
-                                            <strong><%= item.user.username %></strong> <span class="text-muted"><%= item.created_at %></span>
-                                            <% if !current_user.blank? %>
-                                            <% if current_user.username == item.user.username %>
-                                            <%= link_to 'Edit', request.original_url+ '/comments/' + item.id.to_s, :method => :post, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:65px;position:absolute" %>
-                                            <%= link_to 'Delete', request.original_url + '/comments/' + item.id.to_s, :method => :delete, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:10px;position:absolute" %>
-                                            <% end %>
-                                            <% end %>
-                                        </div>
-                                        <div class="panel-body">
-                                            <%=item.text%>
-                                            <hr>
-                                            <% if (!item.post.blank?) %>
-                                            <% for files in item.post%>
-                                            <a href="<%= getHostFromIssues+files.attachment_identifier.url  %>" download> Click here to download the attachment</a>
-                                            <%  end%>
-                                            <%  end%>
-                                        </div><!-- /panel-body --
-                                    </div><!-- /panel panel-default --
-                                </div><!-- /col-sm-5 --
-                            </div><!-- /row --
-                            <%end%>
-                        </div><!-- /container --
-                        <% end %>*/}
+
+                            {this.showComments()}
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="footer" style={{ color: 'white', paddingTop: '25px', paddingBottom: '20px' }}>
-                    <p style={{ textAlign: 'center' }}>Š2019 IssueTracker For Student Purposes</p>
+                    <p style={{ textAlign: 'center' }}>ï¿½2019 IssueTracker For Student Purposes</p>
                 </div>
             </div>
       </div >
