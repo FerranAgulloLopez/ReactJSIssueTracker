@@ -3,6 +3,8 @@ import { Nav, Footer, Metadata } from '../util/html_objects'
 import axios from "axios";
 import {host} from "../../externalLinks/apiserver"; 
 import _ from "lodash";
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 
 
 class ShowIssue extends React.Component {
@@ -30,7 +32,6 @@ class ShowIssue extends React.Component {
     }
 
     async postComment() {
-        alert("Posting comment");
         var resp = await axios({
             method: 'post',
             url: host+"issues/"+"2"+"/comments",
@@ -54,7 +55,6 @@ class ShowIssue extends React.Component {
     }
 
   async getIssue() {
-    alert("getting Issues");
     var id = window.location.href.replace(/.+\//g, "");
     this.setState({id});
     var resp = await axios({
@@ -73,7 +73,6 @@ class ShowIssue extends React.Component {
   }
 
   async getComments() {
-      alert("getting Comments");
       var resp = await axios({
           method: 'get',
           url: host+"issues/"+"2"+"/comments",
@@ -90,7 +89,6 @@ class ShowIssue extends React.Component {
   }
    
   async downvote(){
-      console.log("DOWNVOTE");
           var resp = await axios({
           method: 'post',
           url: host+"issues/"+"2"+"/unvote",
@@ -105,8 +103,6 @@ class ShowIssue extends React.Component {
   }
 
   async vote(){
-    alert("Voting");
-      console.log("VOTE");
       var resp = await axios({
           method: 'post',
           url: host+"issues/"+"2"+"/vote",
@@ -121,7 +117,6 @@ class ShowIssue extends React.Component {
   }
 
   async unfollow(){
-    alert("Unfollow");
       var resp = await axios({
           method: 'post',
           url: host+"issues/"+"2"+"/unfollow",
@@ -136,10 +131,25 @@ class ShowIssue extends React.Component {
   }
 
   async follow(){
-    alert("Following");
       var resp = await axios({
           method: 'post',
           url: host+"issues/"+"2"+"/follow",
+          params: {}, 
+          data: {}, 
+          headers: {
+              Authorization: 'Bearer ' + this.props.token,
+              Accept: 'application/json',
+              "Content-Type": 'application/json',        
+          },
+      });
+  }
+  goToEdit(){
+      window.location.href = window.location.href.replace("ShowIssue", "EditIssue");
+  }
+  async delete(){
+      var resp = await axios({
+          method: 'delete',
+          url: host+"issues/"+this.state.id,
           params: {}, 
           data: {}, 
           headers: {
@@ -153,7 +163,6 @@ class ShowIssue extends React.Component {
   showComments(){
       if (_.isEmpty(this.state.comments)) return <div />;
       var htmlComments = this.state.comments.map((comment) => {
-          console.log(comment);
         return <div />
         //   return (
         //     <div class="row">
@@ -286,7 +295,7 @@ class ShowIssue extends React.Component {
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Assignee</h5>
-                                    {this.state.issue.stringassign}
+                                    {this.state.issue._links.assign.href.replace(/.+\//g, "")}
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Updated at</h5>
@@ -325,8 +334,8 @@ class ShowIssue extends React.Component {
                             <div className="row" style={{ marginTop: '25px' }}>
                                 <div className="col-md-6" style={{}}>
                                     {
-                                        (this.props.username && this.state.issue.username == this.props.username)? <div>
-                                            <button onClick={this.edit.bind(this)}>Edit</button>
+                                        (this.props.username && this.state.issue._links.creator.href.replace(/.+\//g, "") == this.props.username)? <div>
+                                            <button onClick={this.goToEdit}>Edit</button>
                                             <button onClick={this.delete.bind(this)}>Delete</button>
                                         </div>:null
                                     }
@@ -364,4 +373,4 @@ class ShowIssue extends React.Component {
 export default ShowIssue;
 
 
-<Link to={`EditIssue/${id}`}><a style={{backgroundColor:"#000", color:"#fff"}}>Edit</a>Edit</Link>
+{/*<Link to={`EditIssue/${this.state.id}`}><a style={{backgroundColor:"#000", color:"#fff"}}>Edit</a>Edit</Link>*/}
