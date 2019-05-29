@@ -371,6 +371,3 @@ class ShowIssue extends React.Component {
 }
 
 export default ShowIssue;
-
-
-{/*<Link to={`EditIssue/${this.state.id}`}><a style={{backgroundColor:"#000", color:"#fff"}}>Edit</a>Edit</Link>*/}
