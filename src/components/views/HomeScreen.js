@@ -4,6 +4,7 @@ import _ from "lodash";
 import axios from "axios";
 import AllIssues from './AllIssues';
 import CreateIssue from './CreateIssue';
+import EditIssue from "./EditIssue";
 import LogOut from './LogOut';
 import ShowIssue from './ShowIssue';
 import {host} from "../../externalLinks/apiserver"; 
@@ -63,6 +64,7 @@ class HomeScreen extends React.Component {
           <Route path="/issue/" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
           <Route path="/logout/" component= { (props) => <LogOut {...props} logOut={this.props.logOut} /> } />
           <Route path="/ShowIssue" component= { (props) => <ShowIssue {...props} token={this.props.token} username={this.props.username}/> } />
+          <Route path="/EditIssue" component= { (props) => <EditIssue {...props} token={this.props.token} username={this.props.username}/> } />
         </div>
         </Router>
       </div>

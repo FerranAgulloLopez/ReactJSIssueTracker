@@ -14,6 +14,7 @@ class ShowIssue extends React.Component {
         value:'',
         comments: [],
         userCommentActual: null,
+        id: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,6 +30,7 @@ class ShowIssue extends React.Component {
     }
 
     async postComment() {
+        alert("Posting comment");
         var resp = await axios({
             method: 'post',
             url: host+"issues/"+"2"+"/comments",
@@ -52,9 +54,12 @@ class ShowIssue extends React.Component {
     }
 
   async getIssue() {
+    alert("getting Issues");
+    var id = window.location.href.replace(/.+\//g, "");
+    this.setState({id});
     var resp = await axios({
       method: 'get',
-      url: host+"issues/"+"2",
+      url: host+"issues/"+id,
       params: {}, 
       data: {}, 
       headers: {
@@ -68,6 +73,7 @@ class ShowIssue extends React.Component {
   }
 
   async getComments() {
+      alert("getting Comments");
       var resp = await axios({
           method: 'get',
           url: host+"issues/"+"2"+"/comments",
@@ -99,6 +105,7 @@ class ShowIssue extends React.Component {
   }
 
   async vote(){
+    alert("Voting");
       console.log("VOTE");
       var resp = await axios({
           method: 'post',
@@ -114,6 +121,7 @@ class ShowIssue extends React.Component {
   }
 
   async unfollow(){
+    alert("Unfollow");
       var resp = await axios({
           method: 'post',
           url: host+"issues/"+"2"+"/unfollow",
@@ -128,6 +136,7 @@ class ShowIssue extends React.Component {
   }
 
   async follow(){
+    alert("Following");
       var resp = await axios({
           method: 'post',
           url: host+"issues/"+"2"+"/follow",
@@ -136,37 +145,50 @@ class ShowIssue extends React.Component {
           headers: {
               Authorization: 'Bearer ' + this.props.token,
               Accept: 'application/json',
-              "Content-Type": 'application/json'        
+              "Content-Type": 'application/json',        
           },
       });
   }
 
-  async getUserCommentActual(user){
-        var resp = await axios({
-            method: 'get',
-            url: host+user,
-            params: {},
-            data: {},
-            headers: {
-                Authorization: 'Bearer ' + this.props.token,
-                Accept: 'application/json',
-                "Content-Type": 'application/json'
-            },
-      });
-      var data = resp.data;
-      this.setState({userCommentActual: data});
-  }
-
-  llamarAGetUserCommentActual(user){
-    this.getUserCommentActual(user);
-  }
-
   showComments(){
+      if (_.isEmpty(this.state.comments)) return <div />;
+      var htmlComments = this.state.comments.map((comment) => {
+          console.log(comment);
+        return <div />
+        //   return (
+        //     <div class="row">
+        //     <div class="col-sm-1">
+        //         <div class="thumbnail">
+        //             <img class="img-responsive user-photo" src='<%= item.user.avatar_url %>'>
+        //         </div>
+        //     </div>
+        //     <div class="col-sm-5">
+        //         <div class="panel panel-default" style="width:200%">
+        //             <div class="panel-heading">
+        //                 <strong><%= item.user.username %></strong> <span class="text-muted"><%= item.created_at %></span>
+        //                 <% if !current_user.blank? %>
+        //                 <% if current_user.username == item.user.username %>
+        //                 <%= link_to 'Edit', request.original_url+ '/comments/' + item.id.to_s, :method => :post, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:65px;position:absolute" %>
+        //                 <%= link_to 'Delete', request.original_url + '/comments/' + item.id.to_s, :method => :delete, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:10px;position:absolute" %>
+        //                 <% end %>
+        //                 <% end %>
+        //             </div>
+        //             <div class="panel-body">
+        //                 <%=item.text%>
+        //                 <hr>
+        //                 <% if (!item.post.blank?) %>
+        //                 <% for files in item.post%>
+        //                 <a href="<%= getHostFromIssues+files.attachment_identifier.url  %>" download> Click here to download the attachment</a>
+        //             </div>
+        //         </div>
+        //     </div>
+        // </div>
+        //   );
+      })
       return (
           <div className="container">
               {this.state.comments.map(comment => (
               <div className="row">
-              {this.llamarAGetUserCommentActual(comment._links.creator.href)}
                 <div className="col-sm-1">
                     <div className="thumbnail">
                         {this.userCommentActual? <img className="img-responsive user-photo" src={this.state.userCommentActual.avatar_url}/>:null}
@@ -216,22 +238,18 @@ class ShowIssue extends React.Component {
                                 <% end %>*/}
   }
 
-
-  
   render() {
+
       if (_.isNull(this.state.issue)) {
           return (<div>Loading...</div>);
       }
         return (
             <div>
-            {/*console.log(this.state.issue.voted_by_user)*/}
-            {/*console.log(this.state.issue.followed_by_user)*/}
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
                 <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css" />
-                <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
-                
+                {/* <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" /> */}
             <div className="py-5" style={{ marginBottom: '40px' }}>
                 <div className="container">
                     <div className="row" style={{}}>
@@ -344,3 +362,6 @@ class ShowIssue extends React.Component {
 }
 
 export default ShowIssue;
+
+
+<Link to={`EditIssue/${id}`}><a style={{backgroundColor:"#000", color:"#fff"}}>Edit</a>Edit</Link>
