@@ -30,7 +30,9 @@ class IssueForm extends React.Component {
 
     handleSubmit() {
            if (this.checkValues()) {
-               const url = 'issues'
+               let url = 'issues'
+               if (this.state.update) url +="?id="+ window.location.href.replace(/.+\//g, "");
+               alert(url);
                let method = 'POST'
                if (this.state.update) method = 'PATCH'
                const state = this.state
