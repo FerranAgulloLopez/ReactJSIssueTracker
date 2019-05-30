@@ -4,55 +4,67 @@ import axios from "axios";
 import {host} from "../../externalLinks/apiserver"; 
 import _ from "lodash";
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-
+const FileDownload = require('js-file-download');
 
 
 class ShowIssue extends React.Component {
   
-    constructor(props) {
-    super(props);
-    this.state = {
-        issue: null,
-        value:'',
-        comments: [],
-        userCommentActual: null,
-        id: null,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    }
-  
-    handleChange(event) {
-        this.setState({value: event.target.value});
-    }
+  constructor(props) {
+  super(props);
+  this.state = {
+    issue: null,
+    value:'',
+    comments: [],
+    userCommentActual: null,
+    id: null,
+    pictureList: [],
+    updateComent:{
+      open: false,
+      idComment: 0,
+      index: 0,
+    },
+    editCommentText:"",
+  };
+  this.handleChange = this.handleChange.bind(this);
+  this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-    handleSubmit(event) {
-        this.postComment();
-        event.preventDefault();
-    }
+  componentDidMount() {
+    this.asyncCDM();
+  }
 
-    async postComment() {
-        var resp = await axios({
-            method: 'post',
-            url: host+"issues/"+this.state.id+"/comments",
-            params: {}, 
-            data: {
-                "text":this.state.value
-            }, 
-            headers: {
-                Authorization: 'Bearer ' + this.props.token,
-                Accept: 'application/json',
-                "Content-Type": 'application/json'        
-            },
-        });
-        var data = resp.data;
-        this.setState({issue: data});
-    }
+  async asyncCDM() {
+    await this.getIssue();
+    await this.getComments();
+    await this.createPictureList();
+  }
 
-    componentDidMount() {
-        this.getComments();
-        this.getIssue();
-    }
+  handleChange(event) {
+      this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+      this.postComment();
+      event.preventDefault();
+  }
+
+  async postComment() {
+      var resp = await axios({
+          method: 'post',
+          url: host+"issues/"+this.state.id+"/comments",
+          params: {}, 
+          data: {
+              "text":this.state.value
+          }, 
+          headers: {
+              Authorization: 'Bearer ' + this.props.token,
+              Accept: 'application/json',
+              "Content-Type": 'application/json'        
+          },
+      });
+      var data = resp.data;
+      this.setState({issue: data});
+  }
 
   async getIssue() {
     var id = window.location.href.replace(/.+\//g, "");
@@ -73,6 +85,7 @@ class ShowIssue extends React.Component {
   }
 
   async getComments() {
+      console.log("Getting Comments...");
       var resp = await axios({
           method: 'get',
           url: host+"issues/"+this.state.id+"/comments",
@@ -85,6 +98,7 @@ class ShowIssue extends React.Component {
           },
       });
       var data = resp.data;
+      console.log(data);
       this.setState({comments: data});
   }
    
@@ -143,12 +157,15 @@ class ShowIssue extends React.Component {
           },
       });
   }
+
   goToEdit(){
       window.location.href = window.location.href.replace("ShowIssue", "EditIssue");
   }
+
   back(){
       window.location.href = window.location.href.replace("ShowIssue/"+this.state.id, "AllIssues");
   }
+
   async delete(){
       var resp = await axios({
           method: 'delete',
@@ -164,94 +181,195 @@ class ShowIssue extends React.Component {
       window.location.href = '/AllIssues'
   }
 
+  async createPictureList() {
+    var list = [];
+    for (var i = 0; i < this.state.comments.length; ++i) {
+      list.push(0);
+    }
+    for (var i = 0; i < this.state.comments.length; ++i) {
+      var resp = await axios({
+        method: 'get',
+        url: `${host}users/${this.state.comments[i]._links.creator.href.replace("/users/","")}`,
+        params: {}, 
+        data: {}, 
+        headers: {
+          Authorization: 'Bearer ' + this.props.token,
+          Accept: 'application/json',
+          "Content-Type": 'application/json',        
+        },
+        selectedFile: null,
+      });
+      list[i] = resp.data.avatar_url;
+      
+    }
+    console.log("avatars:");
+    console.log(list);
+    this.setState({pictureList:list});
+  }
+
+  async deleteMSG(id, index) {
+    var resp = await axios({
+      method: 'delete',
+      url: host+"issues/"+this.state.id+"/comments/"+id,
+      params: {}, 
+      data: {}, 
+      headers: {
+        Authorization: 'Bearer ' + this.props.token,
+        Accept: 'application/json',
+        "Content-Type": 'application/json'        
+      },
+    });
+    var MSGs = this.state.comments;
+    MSGs.splice(index,1);
+    var PHOTOs = this.state.pictureList;
+    PHOTOs.splice(index,1);
+    console.log(MSGs);
+    this.setState({comments:MSGs, pictureList:PHOTOs});
+  }
+
+  async showEditModal(id, index, text) {
+    this.setState({
+      updateComent:{
+        open: true,
+        idComment: id,
+        index: index,
+      }, 
+      editCommentText:text,
+    });
+  }
+
+  closeEditModal() {
+    this.setState({updateComent:{
+      open: false,
+      idComment: 0,
+      index: 0,
+    }});
+  }
+
+  async updateEditModal() {
+    var resp = await axios({
+      method: 'patch',
+      url: host+"issues/"+this.state.id+"/comments/"+this.state.updateComent.idComment,
+      params: {}, 
+      data: {
+        text: this.state.editCommentText,
+      }, 
+      headers: {
+        Authorization: 'Bearer ' + this.props.token,
+        Accept: 'application/json',
+        "Content-Type": 'application/json'        
+      },
+    });
+
+    this.getComments();
+    this.closeEditModal();
+  }
+
+  async createComment() {
+    var resp = await axios({
+      method: 'post',
+      url: host+"issues/"+this.state.id+"/comments",
+      params: {}, 
+      data: {
+        text: this.state.value,
+      }, 
+      headers: {
+        Authorization: 'Bearer ' + this.props.token,
+        Accept: 'application/json',
+        "Content-Type": 'application/json'        
+      },
+    });
+
+    if (this.state.selectedFile != null) {// Hay fichero adjunto
+      var id = resp.data.id;
+      const data = new FormData() 
+      data.append('file', this.state.selectedFile)
+      var resp = await axios({
+        method: 'patch',
+        url: host+"issues/"+this.state.id+"/comments/file/"+id,
+        params: {}, 
+        data, 
+        headers: {
+          Authorization: 'Bearer ' + this.props.token,
+          Accept: 'application/json',
+          "Content-Type": 'application/json'        
+        },
+      });
+    }
+
+    await this.getComments();
+    await this.createPictureList();
+    this.setState({selectedFile:null});
+  }
+
+  showWriteComment() {
+    return (
+      <div className="row" style={{margin:"40px", display:"flex"}}>
+        <textarea type="text" value={this.state.value} onChange={this.handleChange} placeholder="What do you want to say?" style={{width:"500px"}}/>
+        <button type="button" className="btn btn-dark toTHIS.CREATE" style={{marginLeft:6, marginTop:"10px"}} onClick={() => {this.createComment();}}>Submit</button> 
+        <input type="file" name="file" onChange={(event) => {this.setState({selectedFile: event.target.files[0], loaded: 0});}} style={{display:"block", marginTop: "10px"}}/>
+      </div>
+    );
+  }
+
+  async downloadFile(id, name) {
+    var resp = await axios({
+      method: 'get',
+      url: host+`uploads/post/attachment_identifier/${id}/${name}`,
+      params: {}, 
+      data: {}, 
+      headers: {
+        Authorization: 'Bearer ' + this.props.token,
+        Accept: 'application/json',
+        "Content-Type": 'application/json'        
+      },
+    });
+
+    FileDownload(resp.data, name);
+
+  }
+
   showComments(){
-      if (_.isEmpty(this.state.comments)) return <div />;
-      var htmlComments = this.state.comments.map((comment) => {
-        return <div />
-        //   return (
-        //     <div class="row">
-        //     <div class="col-sm-1">
-        //         <div class="thumbnail">
-        //             <img class="img-responsive user-photo" src='<%= item.user.avatar_url %>'>
-        //         </div>
-        //     </div>
-        //     <div class="col-sm-5">
-        //         <div class="panel panel-default" style="width:200%">
-        //             <div class="panel-heading">
-        //                 <strong><%= item.user.username %></strong> <span class="text-muted"><%= item.created_at %></span>
-        //                 <% if !current_user.blank? %>
-        //                 <% if current_user.username == item.user.username %>
-        //                 <%= link_to 'Edit', request.original_url+ '/comments/' + item.id.to_s, :method => :post, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:65px;position:absolute" %>
-        //                 <%= link_to 'Delete', request.original_url + '/comments/' + item.id.to_s, :method => :delete, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:10px;position:absolute" %>
-        //                 <% end %>
-        //                 <% end %>
-        //             </div>
-        //             <div class="panel-body">
-        //                 <%=item.text%>
-        //                 <hr>
-        //                 <% if (!item.post.blank?) %>
-        //                 <% for files in item.post%>
-        //                 <a href="<%= getHostFromIssues+files.attachment_identifier.url  %>" download> Click here to download the attachment</a>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-        //   );
-      })
+    if (_.isEmpty(this.state.comments) || _.isEmpty(this.state.pictureList)) return <div />;
+    var htmlComments = this.state.comments.map((comment, index) => {
+      const un = comment._links.creator.href.replace("/users/", "");
+      if (!_.isEmpty(comment._embedded)) {
+        // calculate name:
+        var fileName = comment._embedded.attachment.href.replace(/.+\//g, "");
+        // calculate id:
+        var fileId = comment._embedded.attachment.href.replace("/uploads/post/attachment_identifier/", "").replace("/"+fileName,"");
+      }
       return (
-          <div className="container">
-              {this.state.comments.map(comment => (
-              <div className="row">
-                <div className="col-sm-1">
-                    <div className="thumbnail">
-                        {this.userCommentActual? <img className="img-responsive user-photo" src={this.state.userCommentActual.avatar_url}/>:null}
-                    </div>
+      <div key={index} className="card" style={{marginTop:30}}>
+          <div class="card-header">
+              <img src={this.state.pictureList[index]} style={{width:30, height:30, borderRadius:6}}/>
+              <div style={{fontWeight:"bold", display:"inline"}}>   {un}   </div>
+              <div style={{display:"inline", fontSize: 14}}>{comment.updated_at} </div>
+              {(un == this.props.username) ? (
+                <div style={{display:"inline", right:0, position:"absolute", marginRight:10}}>
+                  <button type="button" className="btn btn-dark" onClick={() => {this.showEditModal(comment.id, index, comment.text);}}>Edit</button>
+                  <button type="button" className="btn btn-dark" style={{marginLeft:6}} onClick={() => {this.deleteMSG(comment.id, index);}}>Delete</button>
                 </div>
-               </div>
-
-              ))}
+              ) : (<div/>)}
+              
           </div>
-      )
-
-      {/*<% if @issue.present? %>
-                                <div class="container">
-                                    <% comment=@issue.comment %>
-                                    <% for item in comment %>
-                                    <div class="row">
-                                        <div class="col-sm-1">
-                                            <div class="thumbnail">
-                                                <img class="img-responsive user-photo" src='<%= item.user.avatar_url %>'>
-                                            </div><!-- /thumbnail --
-                                        </div><!-- /col-sm-1 --
-                                        <div class="col-sm-5">
-                                            <div class="panel panel-default" style="width:200%">
-                                                <div class="panel-heading">
-                                                    <strong><%= item.user.username %></strong> <span class="text-muted"><%= item.created_at %></span>
-                                                    <% if !current_user.blank? %>
-                                                    <% if current_user.username == item.user.username %>
-                                                    <%= link_to 'Edit', request.original_url+ '/comments/' + item.id.to_s, :method => :post, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:65px;position:absolute" %>
-                                                    <%= link_to 'Delete', request.original_url + '/comments/' + item.id.to_s, :method => :delete, class: "btn btn-primary", style: "color:black;border-color:#ffffff;background-color:#ffffff;top:6px;right:10px;position:absolute" %>
-                                                    <% end %>
-                                                    <% end %>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <%=item.text%>
-                                                    <hr>
-                                                    <% if (!item.post.blank?) %>
-                                                    <% for files in item.post%>
-                                                    <a href="<%= getHostFromIssues+files.attachment_identifier.url  %>" download> Click here to download the attachment</a>
-                                                    <%  end%>
-                                                    <%  end%>
-                                                </div><!-- /panel-body --
-                                            </div><!-- /panel panel-default --
-                                        </div><!-- /col-sm-5 --
-                                    </div><!-- /row --
-                                    <%end%>
-                                </div><!-- /container --
-                                <% end %>*/}
+          <div className="card-body">
+            <div>{comment.text}</div>
+      {(!_.isEmpty(comment._embedded)) ? (
+        <div>
+        <hr/>
+        <div style={{fontWeight:"bold", color:"darkblue"}} onClick={() => {this.downloadFile(fileId, fileName)}}>{fileName}</div>
+      </div>
+      ) : <div/>}
+          </div>
+      </div>
+      );
+    })
+    return htmlComments;
   }
 
   render() {
+    console.log(this.state.value);
 
       if (_.isNull(this.state.issue)) {
           return (<div>Loading...</div>);
@@ -263,6 +381,19 @@ class ShowIssue extends React.Component {
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
                 <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css" />
                 {/* <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" /> */}
+                
+                { //Modal For edit comment
+                (this.state.updateComent.open) ? (
+                  <div style={{position:"fixed", top:200, zIndex:10000, width:"100%", display:"flex", justifyContent: "center"}}>
+                    <div style={{padding: 30, borderRadius: 15,  backgroundColor:"#ddd",}}>
+                    <div style={{fontWeight:"bold"}}>Edit your message:</div>
+                    <input style={{width:400}} type="textarea" value={this.state.editCommentText} onChange={(event) => this.setState({editCommentText: event.target.value})}/>
+                    <button type="button" className="btn btn-dark" style={{marginLeft:6}} onClick={() => {this.updateEditModal();}}>Update</button>
+                    <button type="button" className="btn btn-dark" style={{marginLeft:6}} onClick={() => {this.closeEditModal();}}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (<div/>)}
+
             <div className="py-5" style={{ marginBottom: '40px' }}>
                 <div className="container">
                     <div className="row" style={{}}>
@@ -348,16 +479,11 @@ class ShowIssue extends React.Component {
                                 <div className="col-md-2 offset-md-4" style={{}}>
                                     <button style={{ color:"white",backgroundColor:"black",borderColor:"black"}} onClick={this.back.bind(this)}>Back</button>
                                 </div>
-                            </div>
-                                    {
-                                        this.props.username? <form onSubmit={this.handleSubmit}>
-                                        <textarea type="text" value={this.state.value} onChange={this.handleChange} />
-                                        <input type="submit" value="Create" />
-                                        </form>:null
-                                    }
-                            <div>
-                                <hr />
+                              </div>
 
+                            {this.showWriteComment()}
+                                <hr />
+                                <div>
                             {this.showComments()}
 
                             </div>
