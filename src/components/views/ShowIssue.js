@@ -467,13 +467,11 @@ class ShowIssue extends React.Component {
                                     {
                                         this.props.username? <div>
                                         {
-                                this.state.issue.voted_by_user? <button type="button" className="btn btn-dark" onClick={this.downvote.bind(this)}>Downvote</button>:<button type="button" className="btn btn-dark" onClick={this.vote.bind(this)}>Vote</button>
+                                this.state.issue.voted_by_user? <button type="button" className="btn btn-dark" style={{marginRight: '5px'}} onClick={this.downvote.bind(this)}>Downvote</button>:<button type="button" className="btn btn-dark" style={{marginRight: '5px'}} onClick={this.vote.bind(this)}>Vote</button>
                                       }
-                                      <div>
                                       {
-                                this.state.issue.followed_by_user? <button type="button" className="btn btn-dark" onClick={this.unfollow.bind(this)}>Unfollow</button>:<button type="button" className="btn btn-dark" onClick={this.follow.bind(this)}>Follow</button>
+                                this.state.issue.followed_by_user? <button type="button" className="btn btn-dark" style={{marginRight: '5px'}} onClick={this.unfollow.bind(this)}>Unfollow</button>:<button type="button" className="btn btn-dark" style={{marginRight: '5px'}} onClick={this.follow.bind(this)}>Follow</button>
                                       }
-                                      </div>
                                       </div>:null
                                     }
                                 </div>
