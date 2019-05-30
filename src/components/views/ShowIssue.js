@@ -26,9 +26,11 @@ class ShowIssue extends React.Component {
       index: 0,
     },
     editCommentText:"",
+      status:"",
   };
   this.handleChange = this.handleChange.bind(this);
   this.handleSubmit = this.handleSubmit.bind(this);
+  this.handleUpdateStatus = this.handleUpdateStatus.bind(this);
   }
 
   componentDidMount() {
@@ -372,7 +374,34 @@ class ShowIssue extends React.Component {
       );
     })
     return htmlComments;
-  }
+}
+
+    handleUpdateStatus(event){
+        alert(event.target.value);
+        this.setState({status: event.target.value});
+        alert(this.state.status);
+        this.updateStatus();
+    }
+
+    async updateStatus(){
+        var resp = await axios({
+            method: 'patch',
+            url: host+"issues/"+this.state.id,
+            params: {}, 
+            data: {
+                "title":this.state.issue.title,
+                "description":this.state.issue.description,
+                "status":this.state.status,
+                "tipus": this.state.issue.tipus,
+                "priority": this.state.issue.priority,
+                "assigne": this.state.issue._links.assign.href.replace(/.+\//g, "")}, 
+            headers: {
+                Authorization: 'Bearer ' + this.props.token,
+                Accept: 'application/json',
+                "Content-Type": 'application/json',        
+            },
+        });
+    }
 
   render() {
     console.log(this.state.value);
@@ -452,7 +481,19 @@ class ShowIssue extends React.Component {
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Status</h5>
-                                    {this.state.issue.status}
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <select name="status"  onChange={this.handleUpdateStatus}>
+                                    <option value="NEW">NEW</option>
+                                    <option value="DUPLICATE">DUPLICATE</option>
+                                    <option value="RESOLVED">RESOLVED</option>
+                                    <option value="INVALID">INVALID</option>
+                                    <option value="ON HOLD">ON HOLD</option>
+                                </select>
+                            </td>
+                        </tr>
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Votes</h5>
@@ -460,6 +501,9 @@ class ShowIssue extends React.Component {
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Followed by</h5>
+                                    {
+                                        this.state.issue.followed_by_user? <label>{this.props.username}</label>:null
+                                    }
                                     {/*<% watch=@issue.watch
                             cont = 0
                             @coma = ", ".html_safe
