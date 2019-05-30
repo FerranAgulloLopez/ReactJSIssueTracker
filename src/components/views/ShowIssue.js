@@ -542,7 +542,7 @@ class ShowIssue extends React.Component {
                             <div className="row" style={{ marginTop: '25px' }}>
                                 <div className="col-md-6" style={{}}>
                                     {
-                                        (this.props.username && this.state.issue._links.creator.href.replace(/.+\//g, "") == this.props.username)? <div>
+                                        (this.props.username && (this.state.issue._links.creator.href.replace(/.+\//g, "") == this.props.username || this.state.issue._links.assign.href.replace(/.+\//g, "") == this.props.username))? <div>
                                             <button type="button" className="btn btn-dark" style={{marginRight: '5px'}} onClick={this.goToEdit}>Edit</button>
                                             <button type="button" className="btn btn-dark" onClick={this.delete.bind(this)}>Delete</button>
                                         </div>:null
