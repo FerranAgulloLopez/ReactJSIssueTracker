@@ -3,8 +3,10 @@ import { Nav, Footer, Metadata } from '../util/html_objects'
 import axios from "axios";
 import {host} from "../../externalLinks/apiserver"; 
 import _ from "lodash";
+import moment from 'moment';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 const FileDownload = require('js-file-download');
+
 
 
 class ShowIssue extends React.Component {
@@ -348,7 +350,7 @@ class ShowIssue extends React.Component {
           <div class="card-header">
               <img src={this.state.pictureList[index]} style={{width:30, height:30, borderRadius:6}}/>
               <div style={{fontWeight:"bold", display:"inline"}}>   {un}   </div>
-              <div style={{display:"inline", fontSize: 14}}>{comment.updated_at} </div>
+              <div style={{display:"inline", fontSize: 14}}>{moment(comment.updated_at).fromNow()} </div>
               {(un == this.props.username) ? (
                 <div style={{display:"inline", right:0, position:"absolute", marginRight:10}}>
                   <button type="button" className="btn btn-primary" style={{color: 'black', borderColor: '#ffffff', backgroundColor: '#ffffff', top: '0px', right: '85px', position: 'absolute'}} onClick={() => {this.showEditModal(comment.id, index, comment.text);}}>Edit</button>
