@@ -504,6 +504,8 @@ class ShowIssue extends React.Component {
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Status</h5>
+                                    {
+                                        (this.props.username && (this.state.issue._links.creator.href.replace(/.+\//g, "") == this.props.username || this.state.issue._links.assign.href.replace(/.+\//g, "") == this.props.username))?
                         <tr>
                             <td>
                             </td>
@@ -516,7 +518,8 @@ class ShowIssue extends React.Component {
                                     <option value="ON HOLD">ON HOLD</option>
                                 </select>
                             </td>
-                        </tr>
+                        </tr>:this.state.issue.status
+                                    }   
                                 </div>
                                 <div className="card-body">
                                     <h5 className="card-title">Votes</h5>
