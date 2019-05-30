@@ -27,6 +27,7 @@ class ShowIssue extends React.Component {
       index: 0,
     },
     editCommentText:"",
+    errorMessage: false
   };
   this.handleChange = this.handleChange.bind(this);
   this.handleSubmit = this.handleSubmit.bind(this);
@@ -273,41 +274,57 @@ class ShowIssue extends React.Component {
   }
 
   async createComment() {
-    var resp = await axios({
-      method: 'post',
-      url: host+"issues/"+this.state.id+"/comments",
-      params: {}, 
-      data: {
-        text: this.state.value,
-      }, 
-      headers: {
-        Authorization: 'Bearer ' + this.props.token,
-        Accept: 'application/json',
-        "Content-Type": 'application/json'        
-      },
-    });
+    let value = this.state.value
+    this.setState({value: ''})
+    if (this.state.value == null || this.state.value == '') {
+        this.setState({errorMessage: true})
+    } else {
+        this.setState({errorMessage: false})
+        var resp = await axios({
+          method: 'post',
+          url: host+"issues/"+this.state.id+"/comments",
+          params: {},
+          data: {
+            text: value,
+          },
+          headers: {
+            Authorization: 'Bearer ' + this.props.token,
+            Accept: 'application/json',
+            "Content-Type": 'application/json'
+          },
+        });
 
-    if (this.state.selectedFile != null) {// Hay fichero adjunto
-      var id = resp.data.id;
-      const data = new FormData() 
-      data.append('file', this.state.selectedFile)
-      var resp = await axios({
-        method: 'patch',
-        url: host+"issues/"+this.state.id+"/comments/file/"+id,
-        params: {}, 
-        data, 
-        headers: {
-          Authorization: 'Bearer ' + this.props.token,
-          Accept: 'application/json',
-          "Content-Type": 'application/json'        
-        },
-      });
+        if (this.state.selectedFile != null) {// Hay fichero adjunto
+          var id = resp.data.id;
+          const data = new FormData()
+          data.append('file', this.state.selectedFile)
+          var resp = await axios({
+            method: 'patch',
+            url: host+"issues/"+this.state.id+"/comments/file/"+id,
+            params: {},
+            data,
+            headers: {
+              Authorization: 'Bearer ' + this.props.token,
+              Accept: 'application/json',
+              "Content-Type": 'application/json'
+            },
+          });
+        }
+
+        await this.getComments();
+        await this.createPictureList();
+        this.setState({selectedFile:null});
     }
-
-    await this.getComments();
-    await this.createPictureList();
-    this.setState({selectedFile:null});
   }
+
+  showError() {
+    if (this.state.errorMessage) {
+        return(
+            <li><label style={{color: 'red'}}> This field is required </label></li>
+        )
+    }
+  }
+
 
   showWriteComment() {
     return (
@@ -317,8 +334,8 @@ class ShowIssue extends React.Component {
         </ul>
         <ul id="second" style={{columnWidth: '550px'}}>
             <li><textarea className="form-control" type="text" value={this.state.value} onChange={this.handleChange} placeholder="What do you want to say?" style={{width: '100%'}}/></li>
-            <li><label style={{color: 'red'}}> This field is required </label></li>
-            <li>Attachment: <input type="file" name="file" onChange={(event) => {this.setState({selectedFile: event.target.files[0], loaded: 0});}} style={{}}/></li>
+            {this.showError()}
+            <li>Attachment: <input type="file" name="file" onChange={(event) => {this.setState({selectedFile: event.target.files[0], loaded: 0});}} style={{marginTop: '10px'}}/></li>
             <li><button type="button" text="Post" className="btn btn-primary" style={{color: 'black', borderColor: '#ffffff', backgroundColor: '#ffffff', borderColor: 'black', marginTop: '10px'}} onClick={() => {this.createComment();}}>Submit</button></li>
         </ul>
               <div style={{color: 'white'}}>Just wondering whats going on</div>
