@@ -403,13 +403,12 @@ class ShowIssue extends React.Component {
 }
 
     handleUpdateStatus(event){
-        alert(event.target.value);
-        this.setState({status: event.target.value});
-        alert(this.state.status);
-        this.updateStatus();
+        this.setState({issue:
+   {...this.state.issue,status: event.target.value}})
+        this.updateStatus(event.target.value);
     }
 
-    async updateStatus(){
+    async updateStatus(aux_status){
         var resp = await axios({
             method: 'patch',
             url: host+"issues/"+this.state.id,
@@ -417,7 +416,7 @@ class ShowIssue extends React.Component {
             data: {
                 "title":this.state.issue.title,
                 "description":this.state.issue.description,
-                "status":this.state.status,
+                "status":aux_status,
                 "tipus": this.state.issue.tipus,
                 "priority": this.state.issue.priority,
                 "assigne": this.state.issue._links.assign.href.replace(/.+\//g, "")}, 
@@ -511,7 +510,7 @@ class ShowIssue extends React.Component {
                             <td>
                             </td>
                             <td>
-                                <select name="status"  onChange={this.handleUpdateStatus}>
+                                <select name="status"  value={this.state.issue.status} onChange={this.handleUpdateStatus}>
                                     <option value="NEW">NEW</option>
                                     <option value="DUPLICATE">DUPLICATE</option>
                                     <option value="RESOLVED">RESOLVED</option>
