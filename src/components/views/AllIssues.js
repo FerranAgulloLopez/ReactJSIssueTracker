@@ -171,7 +171,7 @@ class AllIssues extends React.Component {
        }
        return (
            <tr>
-             <th scope="row">{issue.title}</th>
+             <th scope="row"><Link to={`/ShowIssue/${issue.id}`} style={{color: '#444'}}>{issue.title}</Link></th>
                  <td><label className="myLink" onClick={() => this.addFilter('tipus='+issue.tipus)} style={style}>{issue.tipus}</label></td>
                  <td><label className="myLink" onClick={() => this.addFilter('priority='+issue.priority)} style={style}>{issue.priority}</label></td>
                  <td><label className="myLink" onClick={() => this.addFilter('status='+issue.status)} style={style}>{issue.status}</label></td>

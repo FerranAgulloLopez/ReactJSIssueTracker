@@ -30,7 +30,8 @@ class IssueForm extends React.Component {
 
     handleSubmit() {
            if (this.checkValues()) {
-               const url = 'issues'
+               let url = 'issues'
+               if (this.state.update) url +="/"+ window.location.href.replace(/.+\//g, "");
                let method = 'POST'
                if (this.state.update) method = 'PATCH'
                const state = this.state
@@ -104,8 +105,9 @@ class IssueForm extends React.Component {
         }
     }
 
-    handleResponse() {
-        window.location.href = "/AllIssues"
+handleResponse() {
+    if (this.state.update) window.location.href = window.location.href.replace("EditIssue", "ShowIssue")
+        else window.location.href = "/AllIssues"
     }
 
     handleChange(event) {

@@ -4,7 +4,9 @@ import _ from "lodash";
 import axios from "axios";
 import AllIssues from './AllIssues';
 import CreateIssue from './CreateIssue';
+import EditIssue from "./EditIssue";
 import LogOut from './LogOut';
+import ShowIssue from './ShowIssue';
 import {host} from "../../externalLinks/apiserver"; 
 import { Nav} from '../util/html_objects'
 
@@ -27,7 +29,6 @@ class HomeScreen extends React.Component {
   }
 
   async getUser() {
-    // TODO: get user object
     var resp = await axios({
       method: 'get',
       url: host+"users/"+this.props.username,
@@ -53,6 +54,7 @@ class HomeScreen extends React.Component {
     }
 
     return (
+        
       <div>
         <Router>
         <Nav user={this.state.user}/>
@@ -61,6 +63,8 @@ class HomeScreen extends React.Component {
           <Route path="/CreateIssue" component= { (props) => <CreateIssue {...props} token={this.props.token} username={this.props.username}/> } />
           <Route path="/issue/" component= { (props) => <CreateIssue {...props} token={this.props.token} /> } />
           <Route path="/logout/" component= { (props) => <LogOut {...props} logOut={this.props.logOut} /> } />
+          <Route path="/ShowIssue" component= { (props) => <ShowIssue {...props} token={this.props.token} username={this.props.username} avatar={this.state.user.avatar_url}/> } />
+          <Route path="/EditIssue" component= { (props) => <EditIssue {...props} token={this.props.token} username={this.props.username}/> } />
         </div>
         </Router>
       </div>
