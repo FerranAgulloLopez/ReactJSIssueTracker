@@ -15,6 +15,7 @@ class ShowIssue extends React.Component {
   super(props);
   this.state = {
     issue: null,
+    avatarLoggedUser: this.props.avatar,
     value:'',
     comments: [],
     userCommentActual: null,
@@ -27,6 +28,7 @@ class ShowIssue extends React.Component {
     },
     editCommentText:"",
       status:"",
+    errorMessage: false
   };
   this.handleChange = this.handleChange.bind(this);
   this.handleSubmit = this.handleSubmit.bind(this);
@@ -274,48 +276,72 @@ class ShowIssue extends React.Component {
   }
 
   async createComment() {
-    var resp = await axios({
-      method: 'post',
-      url: host+"issues/"+this.state.id+"/comments",
-      params: {}, 
-      data: {
-        text: this.state.value,
-      }, 
-      headers: {
-        Authorization: 'Bearer ' + this.props.token,
-        Accept: 'application/json',
-        "Content-Type": 'application/json'        
-      },
-    });
+    let value = this.state.value
+    this.setState({value: ''})
+    if (this.state.value == null || this.state.value == '') {
+        this.setState({errorMessage: true})
+    } else {
+        this.setState({errorMessage: false})
+        var resp = await axios({
+          method: 'post',
+          url: host+"issues/"+this.state.id+"/comments",
+          params: {},
+          data: {
+            text: value,
+          },
+          headers: {
+            Authorization: 'Bearer ' + this.props.token,
+            Accept: 'application/json',
+            "Content-Type": 'application/json'
+          },
+        });
 
-    if (this.state.selectedFile != null) {// Hay fichero adjunto
-      var id = resp.data.id;
-      const data = new FormData() 
-      data.append('file', this.state.selectedFile)
-      var resp = await axios({
-        method: 'patch',
-        url: host+"issues/"+this.state.id+"/comments/file/"+id,
-        params: {}, 
-        data, 
-        headers: {
-          Authorization: 'Bearer ' + this.props.token,
-          Accept: 'application/json',
-          "Content-Type": 'application/json'        
-        },
-      });
+        if (this.state.selectedFile != null) {// Hay fichero adjunto
+          var id = resp.data.id;
+          const data = new FormData()
+          data.append('file', this.state.selectedFile)
+          var resp = await axios({
+            method: 'patch',
+            url: host+"issues/"+this.state.id+"/comments/file/"+id,
+            params: {},
+            data,
+            headers: {
+              Authorization: 'Bearer ' + this.props.token,
+              Accept: 'application/json',
+              "Content-Type": 'application/json'
+            },
+          });
+        }
+
+        await this.getComments();
+        await this.createPictureList();
+        this.setState({selectedFile:null});
     }
-
-    await this.getComments();
-    await this.createPictureList();
-    this.setState({selectedFile:null});
   }
+
+  showError() {
+    if (this.state.errorMessage) {
+        return(
+            <li><label style={{color: 'red'}}> This field is required </label></li>
+        )
+    }
+  }
+
 
   showWriteComment() {
     return (
-      <div className="row" style={{margin:"40px", display:"flex"}}>
-        <textarea type="text" value={this.state.value} onChange={this.handleChange} placeholder="What do you want to say?" style={{width:"500px"}}/>
-        <button type="button" className="btn btn-dark toTHIS.CREATE" style={{marginLeft:6, marginTop:"10px"}} onClick={() => {this.createComment();}}>Submit</button> 
-        <input type="file" name="file" onChange={(event) => {this.setState({selectedFile: event.target.files[0], loaded: 0});}} style={{display:"block", marginTop: "10px"}}/>
+      <div style={{marginTop: '70px',marginBottom: '20px'}}>
+        <ul id="first" style={{columnWidth: '10px'}}>
+            <li><img src={this.state.avatarLoggedUser} style={{height: '50px', borderRadius: '30px', marginBottom: '0px'}} /></li>
+        </ul>
+        <ul id="second" style={{columnWidth: '550px'}}>
+            <li><textarea className="form-control" type="text" value={this.state.value} onChange={this.handleChange} placeholder="What do you want to say?" style={{width: '100%'}}/></li>
+            {this.showError()}
+            <li>Attachment: <input type="file" name="file" onChange={(event) => {this.setState({selectedFile: event.target.files[0], loaded: 0});}} style={{marginTop: '10px'}}/></li>
+            <li><button type="button" text="Post" className="btn btn-primary" style={{color: 'black', borderColor: '#ffffff', backgroundColor: '#ffffff', borderColor: 'black', marginTop: '10px'}} onClick={() => {this.createComment();}}>Submit</button></li>
+        </ul>
+              <div style={{color: 'white'}}>Just wondering whats going on</div>
+
       </div>
     );
   }
@@ -520,22 +546,22 @@ class ShowIssue extends React.Component {
                                 <div className="col-md-6" style={{}}>
                                     {
                                         (this.props.username && this.state.issue._links.creator.href.replace(/.+\//g, "") == this.props.username)? <div>
-                                            <button type="button" className="btn btn-dark" onClick={this.goToEdit}>Edit</button>
+                                            <button type="button" className="btn btn-dark" style={{marginRight: '5px'}} onClick={this.goToEdit}>Edit</button>
                                             <button type="button" className="btn btn-dark" onClick={this.delete.bind(this)}>Delete</button>
                                         </div>:null
                                     }
-                                    
+
                                 </div>
                                 <div className="col-md-2 offset-md-4" style={{}}>
                                     <button type="button" className="btn btn-dark" onClick={this.back.bind(this)}>Back</button>
                                 </div>
                               </div>
-
-                            {this.showWriteComment()}
-                                <hr />
-                                <div>
-                            {this.showComments()}
-
+                            <div>
+                                {this.showWriteComment()}
+                            </div>
+                            <hr />
+                            <div>
+                                {this.showComments()}
                             </div>
                         </div>
                     </div>

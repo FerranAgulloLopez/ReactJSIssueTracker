@@ -72,3 +72,8 @@ select::-ms-expand {
   text-decoration: underline;
   cursor: pointer;
 }
+
+#first, #second{
+  float:left;
+}
+ul { list-style-type: none; }
