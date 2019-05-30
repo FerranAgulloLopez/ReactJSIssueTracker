@@ -12,6 +12,6 @@ Joan Marc Pastor Mackenzie
 
 ## Link a l'aplicació desplegada a Heroku:
 
-https://blooming-forest-68248.herokuapp.com
+https://reactjsissuetracker.herokuapp.com/
 
 
