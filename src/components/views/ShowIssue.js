@@ -351,8 +351,8 @@ class ShowIssue extends React.Component {
               <div style={{display:"inline", fontSize: 14}}>{comment.updated_at} </div>
               {(un == this.props.username) ? (
                 <div style={{display:"inline", right:0, position:"absolute", marginRight:10}}>
-                  <button type="button" className="btn btn-dark" onClick={() => {this.showEditModal(comment.id, index, comment.text);}}>Edit</button>
-                  <button type="button" className="btn btn-dark" style={{marginLeft:6}} onClick={() => {this.deleteMSG(comment.id, index);}}>Delete</button>
+                  <button type="button" className="btn btn-primary" style={{color: 'black', borderColor: '#ffffff', backgroundColor: '#ffffff', top: '0px', right: '85px', position: 'absolute'}} onClick={() => {this.showEditModal(comment.id, index, comment.text);}}>Edit</button>
+                  <button type="button" className="btn btn-primary" style={{color: 'black', borderColor: '#ffffff', backgroundColor: '#ffffff', top: '0px', right: '3px', position: 'absolute'}} onClick={() => {this.deleteMSG(comment.id, index);}}>Delete</button>
                 </div>
               ) : (<div/>)}
               
@@ -362,7 +362,7 @@ class ShowIssue extends React.Component {
       {(!_.isEmpty(comment._embedded)) ? (
         <div>
         <hr/>
-        <div style={{fontWeight:"bold", color:"darkblue"}} onClick={() => {this.downloadFile(fileId, fileName)}}>{fileName}</div>
+        <div className="myLink" style={{fontWeight:"bold", color:"darkblue"}} onClick={() => {this.downloadFile(fileId, fileName)}}>{fileName}</div>
       </div>
       ) : <div/>}
           </div>
