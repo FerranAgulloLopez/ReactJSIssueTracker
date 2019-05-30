@@ -340,6 +340,7 @@ class ShowIssue extends React.Component {
             <li>Attachment: <input type="file" name="file" onChange={(event) => {this.setState({selectedFile: event.target.files[0], loaded: 0});}} style={{marginTop: '10px'}}/></li>
             <li><button type="button" text="Post" className="btn btn-primary" style={{color: 'black', borderColor: '#ffffff', backgroundColor: '#ffffff', borderColor: 'black', marginTop: '10px'}} onClick={() => {this.createComment();}}>Submit</button></li>
         </ul>
+            <div style={{clear:"both"}}></div>
               <div style={{color: 'white'}}>Just wondering whats going on</div>
 
       </div>
